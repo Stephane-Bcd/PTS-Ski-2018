@@ -1,5 +1,9 @@
 import CGraph
 import ReadData
+import time
+
+# Start to count the execution time
+start_time = time.time()
 
 #We can define here the size of the graph (number of peaks)
 numberRows = 37
@@ -21,3 +25,6 @@ else:
     g = CGraph.Graph()
     # Print the solution of Dijkstra
     g.dijkstra(graph, 0)
+
+# Display the execution time
+print("Execution time : %s secondes ---" % (time.time() - start_time))
