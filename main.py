@@ -5,26 +5,19 @@ import time
 # Start to count the execution time
 start_time = time.time()
 
-#We can define here the size of the graph (number of peaks)
-numberRows = 37
-numberColumns = 37
+#To check the data inside the file, and create the matrix with the right size
+graph = ReadData.Create_Adjacency_Matrix()
 
-#To create the matrix for our data :
-# Here I initialize the matrix with 0
-graph = [0] * numberRows
-for i in range(numberRows):
-    graph[i] = [0] * numberColumns
+#To fill the matrix with our ski data
+ReadData.Fill_Adjacency_Matrix(graph)
 
-#To read the data and fill our matrix
-error = ReadData.getDataFile(graph)
+g = CGraph.Graph(graph)
+# Print the solution of Dijkstra
+g.dijkstra(0)
 
-if(error == -1):
-    print("Error : impossible to read the data in the file ! ")
-
-else:
-    g = CGraph.Graph()
-    # Print the solution of Dijkstra
-    g.dijkstra(graph, 0)
+shortest_distance = g.get_shortest_distance(1)
+print('shortest distance : ')
+print(shortest_distance)
 
 # Display the execution time
 print("Execution time : %s secondes ---" % (time.time() - start_time))

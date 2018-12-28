@@ -105,14 +105,14 @@ class Graph:
                         # print the constructed distance array
         self.printSolution(src)
 
-    def get_shortest_path(self, goal):
+    #def get_shortest_path(self, goal):
         # Base Case : If j is source
-        path = []
-        if self.parent[goal] == -1:
-            path.__add__(goal)
-            return path
-        self.get_shortest_path(self.parent[goal])
-        path.__add__(goal)
+    #    path = []
+    #    if self.parent[goal] == -1:
+    #        path.append(goal)
+    #        return path
+    #    self.get_shortest_path(self.parent[goal])
+    #    path.append(goal)
 
     def get_shortest_distance(self, goal):
         return self.dist[goal]
