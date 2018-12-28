@@ -3,21 +3,29 @@
 # The program is for adjacency matrix representation of the graph
 
 # Class to represent a graph
+from typing import List, Any
+
+
 class Graph:
+
+    def __init__(self, graph):
+        self.graph = graph
+        self.row = len(graph)
+        self.col = len(graph[0])
 
     # A utility function to find the
     # vertex with minimum dist value, from
     # the set of vertices still in queue
-    def minDistance(self, dist, queue):
+    def minDistance(self, queue):
         # Initialize min value and min_index as -1
         minimum = float("Inf")
         min_index = -1
 
         # from the dist array,pick one which
         # has min value and is till in queue
-        for i in range(len(dist)):
-            if dist[i] < minimum and i in queue:
-                minimum = dist[i]
+        for i in range(len(self.dist)):
+            if self.dist[i] < minimum and i in queue:
+                minimum = self.dist[i]
                 min_index = i
         return min_index
 
@@ -25,50 +33,47 @@ class Graph:
 
     # from source to j
     # using parent array
-    def printPath(self, parent, j):
+    def printPath(self, j):
 
         # Base Case : If j is source
-        if parent[j] == -1:
+        if self.parent[j] == -1:
             print (j),
             return
-        self.printPath(parent, parent[j])
+        self.printPath(self.parent[j])
         print (j),
 
         # A utility function to print
 
     # the constructed distance
     # array
-    def printSolution(self, dist, parent, src):
+    def printSolution(self, src):
         print("Vertex \t\tDistance from Source\tPath")
-        for i in range(1, len(dist)):
-            print("\n%d --> %d \t\t%d \t\t\t\t\t" % (src, i, dist[i])),
-            self.printPath(parent, i)
+        for i in range(1, len(self.dist)):
+            print("\n%d --> %d \t\t%d \t\t\t\t\t" % (src, i, self.dist[i])),
+            self.printPath(i)
 
     '''Function that implements Dijkstra's single source shortest path 
     algorithm for a graph represented using adjacency matrix 
     representation'''
 
-    def dijkstra(self, graph, src):
-
-        row = len(graph)
-        col = len(graph[0])
+    def dijkstra(self, src):
 
         # The output array. dist[i] will hold
         # the shortest distance from src to i
         # Initialize all distances as INFINITE
-        dist = [float("Inf")] * row
+        self.dist = [float("Inf")] * self.row
 
         # Parent array to store
         # shortest path tree
-        parent = [-1] * row
+        self.parent = [-1] * self.row
 
         # Distance of source vertex
         # from itself is always 0
-        dist[src] = 0
+        self.dist[src] = 0
 
         # Add all vertices in queue
         queue = []
-        for i in range(row):
+        for i in range(self.row):
             queue.append(i)
 
             # Find shortest path for all vertices
@@ -77,7 +82,7 @@ class Graph:
             # Pick the minimum dist vertex
             # from the set of vertices
             # still in queue
-            u = self.minDistance(dist, queue)
+            u = self.minDistance(queue)
 
             # remove min element
             queue.remove(u)
@@ -87,15 +92,28 @@ class Graph:
             # the picked vertex. Consider only
             # those vertices which are still in
             # queue
-            for i in range(col):
+            for i in range(self.col):
                 '''Update dist[i] only if it is in queue, there is 
                 an edge from u to i, and total weight of path from 
                 src to i through u is smaller than current value of 
                 dist[i]'''
-                if graph[u][i] and i in queue:
-                    if dist[u] + graph[u][i] < dist[i]:
-                        dist[i] = dist[u] + graph[u][i]
-                        parent[i] = u
+                if self.graph[u][i] and i in queue:
+                    if self.dist[u] + self.graph[u][i] < self.dist[i]:
+                        self.dist[i] = self.dist[u] + self.graph[u][i]
+                        self.parent[i] = u
 
                         # print the constructed distance array
-        self.printSolution(dist, parent, src)
+        self.printSolution(src)
+
+    def get_shortest_path(self, goal):
+        # Base Case : If j is source
+        path = []
+        if self.parent[goal] == -1:
+            path.__add__(goal)
+            return path
+        self.get_shortest_path(self.parent[goal])
+        path.__add__(goal)
+
+    def get_shortest_distance(self, goal):
+        return self.dist[goal]
+
