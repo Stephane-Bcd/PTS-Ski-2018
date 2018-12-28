@@ -56,7 +56,7 @@ def Create_Adjacency_Matrix() :
         fp.close()
 
         # we create the matrix only if the data are correct :
-        if input_data_supposed_points_count==input_data_observed_points_count and input_data_supposed_paths_count==input_data_observed_paths_count:
+        if input_data_supposed_points_count == input_data_observed_points_count and input_data_supposed_paths_count == input_data_observed_paths_count:
             # To create the matrix for our data :
             # Here I initialize the matrix with 0
             graph = [0] * input_data_observed_points_count
