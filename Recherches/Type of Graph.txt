@@ -1,0 +1,40 @@
+There are several types of graphs:
+- Null graph:
+Graph with no edges
+- Trivial graph: 
+Graph with only one vertex
+- Non-Directed Graph:
+Graph with edges that are not directed, this means that edges 'ab' = 'ba'
+- Directed Graph:
+Graph with edges that are directed, this means that edges 'ab' != 'ba'
+- Simple Graph:
+Graph without loops and parallel edges
+Maximum number of edges is defined by n(n – 1)/2 where n is the number of vertices
+- Connected Graph:
+A graph in which a path exists for each pair of vertices
+- Disconnected Graph:
+A graph in which there are two or more not connected components.
+For example a graph with a,b,c,d,e,f,g vertices where we have two components one with a,b,c vertices and the other one with d,e,f,g vertices. Inside the two components the vertices are connected but the two components toesn't have connection between them.
+- Regular Graph:
+Graph in which all vertices have the same degree (same number of connections)
+- Complete Graph:
+A graph in which each vertex is connected to all other vertices
+- Cycle Graph:
+Graph in which all edges form a cycle.
+In other words, if it is a regular graph with a degree of 2
+- Wheel Graph:
+Graph obtained by adding a "hub" vertex into a cycle graph. This is a vertex connected to all other vertices, that's why it's called wheel.
+- Cyclic Graph:
+Graph with at least one cycle inside
+- Acyclic Graph:
+A graph with no cycle
+- Bipartite Graph:
+A simple graph G = (V, E) with vertex partition V = {V1, V2} is called a bipartite graph if every edge of E joins a vertex in V1 to a vertex in V2.
+- Complete Bipartite Graph:
+A bipartite graph in which each vertex from V1 partition is connected to all vertices from V2 partition.
+- Star Graph:
+Complete Bipartite Graph in which only one vertex is present in V1 partition and all other vertices in V2 partition. So the vertex from V1 will be connected to all other vertices, so it makes a star.
+- Complement of a Graph:
+If we consider two graphs G and G' and if both have the same number of vertices but different edges and if by adding both graphs we have a complete graph; so they are complement of each other
+
+Source: https://www.tutorialspoint.com/graph_theory/types_of_graphs.htm
