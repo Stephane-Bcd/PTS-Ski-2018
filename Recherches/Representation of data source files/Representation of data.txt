@@ -1,0 +1,32 @@
+[Outdated] http://graphonline.ru/en/?graph=eCQJcUpScRHkzvHm
+Doublons:
+13-14 R !
+4-6 R !
+4-3 R !
+3-2 R !
+2-1 R !
+26-16 B !
+11-10 B !
+2-1 B !
+
+
+V: vert (aucun présent dans le fichier)
+B: bleu
+R: rouge
+N: noir
+KL: saumon foncé
+SURF: rouge foncé
+
+TPH: jaune
+TC: vert foncé
+TSD: jaune foncé
+TS: rose
+TK: gris
+BUS: rose foncé
+
+
+Penser à stocker 
+- un boolean (piste ouverte ou fermée)
+- Nombre de visiteurs sur un chemin
+- Nombre de visiteurs max du 2e fichier d'entrée
+- Nombre de visiteurs max en fonction de la trajectoire (algo)
