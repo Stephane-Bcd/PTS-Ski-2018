@@ -29,3 +29,5 @@ print(shortest_path)
 
 # Display the execution time
 print("Execution time : %s secondes ---" % (time.time() - start_time))
+
+print (graph)
