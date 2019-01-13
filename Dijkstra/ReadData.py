@@ -1,7 +1,34 @@
 import Compute
+#If you have an error with "import numpy as np", it is because you need to install this library
+#If you use Pycharm there is a easy way : File -> Settings -> Project : 'name project' -> project interpreter -> '+'
+import numpy as np
+
+# This function allows to count the number of occurrences in a list
+def countX(lst, x):
+    count = 0
+    for element in lst:
+        if (element == x):
+            count = count + 1
+    return count
+
+# This function allows to find the biggest occurrence in a list
+def Find_the_biggest_occurence(array_occurence, size_array) :
+
+    valueMax= 0
+
+    for index in range(size_array):
+        value = countX(array_occurence, array_occurence[index])
+        if (value > valueMax ):
+            valueMax = value
+
+    return valueMax
 
 #This function check the number of data int the file, and create a adjacency matrix with the right size for the graph
-def Create_Adjacency_Matrix() :
+# name_piks : output parameter
+def Create_Adjacency_Matrix(name_piks) :
+
+    # This variable "paths_and_occurences" contains all the paths and their occurrences, we use it to know the size of the third dimension
+    paths_and_occurences = []
 
     # index to know if actual data is point or path
     input_data_type_index = 0
@@ -33,6 +60,7 @@ def Create_Adjacency_Matrix() :
 
                 if input_data_type_index == 0:  # for points
                     input_data_supposed_points_count = int(line[0])
+
                 elif input_data_type_index == 1:  # for paths
                     input_data_supposed_paths_count = int(line[0])
                 else:
@@ -44,10 +72,13 @@ def Create_Adjacency_Matrix() :
                 if input_data_type_index == 0:  # for points
                     print("Point: " + str(line))
                     input_data_observed_points_count += 1
-
+                    name_piks.append(line[1])
                 elif input_data_type_index == 1:  # for paths
                     print("Path: " + str(line))
+                    value = line[3] + line[4]
+                    paths_and_occurences.append(value)
                     input_data_observed_paths_count += 1
+
 
         print("Supposed points count: " + str(input_data_supposed_points_count))
         print("Observed points count: " + str(input_data_observed_points_count))
@@ -57,28 +88,29 @@ def Create_Adjacency_Matrix() :
 
         # we create the matrix only if the data are correct :
         if input_data_supposed_points_count == input_data_observed_points_count and input_data_supposed_paths_count == input_data_observed_paths_count:
-            # To create the matrix for our data :
-            # Here I initialize the matrix with 0
-            graph = [0] * input_data_observed_points_count
-            for i in range(input_data_observed_points_count):
-                graph[i] = [0] * input_data_observed_points_count
+
+            #Allows to know the size of the third dimension before to create it
+            size_third_dimension = Find_the_biggest_occurence(paths_and_occurences,int(input_data_supposed_paths_count))
+
+            # To create the matrix for our data, the matrix is initialized with 0
+            graph = np.zeros(input_data_observed_points_count * input_data_observed_points_count * size_third_dimension)
+            graph.resize((input_data_observed_points_count, input_data_observed_points_count, size_third_dimension))
             # We can return the matrix to the main
             return graph
+        else:
+            print('Error : The specified text file contains inaccurate information ')
 
     except FileNotFoundError as e:
         print(e)
 
 #This function will fill a adjacency matrix with the data from a file
+# graph : input parameter
 def Fill_Adjacency_Matrix(graph):
 
     # This variable "peaks" contains all the peaks of our graph
     peaks = {}
     # index to know if actual data is point or path
     input_data_type_index = 0
-
-    # count of points and paths that we are supposed to have (count got from the input file)
-    input_data_supposed_points_count = 0
-    input_data_supposed_paths_count = 0
 
     # count of points and paths that we observe using lines (count got from the input files lines)
     input_data_observed_points_count = 0
@@ -100,13 +132,6 @@ def Fill_Adjacency_Matrix(graph):
                 if not first_iteration_on_file:
                     input_data_type_index += 1
                 first_iteration_on_file = False
-
-                if input_data_type_index == 0:  # for points
-                    input_data_supposed_points_count = int(line[0])
-                elif input_data_type_index == 1:  # for paths
-                    input_data_supposed_paths_count = int(line[0])
-                else:
-                    break
 
             # If current line is normal data line
             else:
@@ -127,11 +152,21 @@ def Fill_Adjacency_Matrix(graph):
                     # To get the height in the line about the second  current peak, it is the peak destination
                     weightPeakB = int(lineFromPeakB[2])
 
-                    # compute_weight() : function to compute the weight of the vertices and return it (in secondes)
-                    graph[int(line[3]) - 1][int(line[4]) - 1] = Compute.compute_weight(line[2], abs(weightPeakA - weightPeakB), line[1])
-                    # To display our graph :
-                    #for i in range(37):
-                    #    print(graph[i])
+                    #I initialized the variable 'condition' to true to simulate a loop 'Do while' instead a loop 'while'
+                    condition = True
+                    indice = 0
+
+                    # this loop while allows to add the parallel paths,
+                    while condition:
+
+                        # If the value in the array is 0 -> there is no path, so we can put the value
+                        if graph[int(line[3]) - 1][int(line[4]) - 1][indice] == 0:
+                            # compute_weight() : function to compute the weight of the vertices and return it (in secondes)
+                             graph[int(line[3]) - 1][int(line[4]) - 1][indice] = Compute.compute_weight(line[2], abs(weightPeakA - weightPeakB), line[1])
+                             condition = False
+                        #If there is a path, we have to use the third dimension of the array, so we increment the value
+                        else:
+                            indice = indice+1
         fp.close()
 
     except FileNotFoundError as e:

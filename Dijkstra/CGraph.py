@@ -3,8 +3,6 @@
 # The program is for adjacency matrix representation of the graph
 
 # Class to represent a graph
-from typing import List, Any
-
 
 class Graph:
 
@@ -12,6 +10,7 @@ class Graph:
         self.graph = graph
         self.row = len(graph)
         self.col = len(graph[0])
+        self.size_third_dimension = len(graph[0][0])
 
     # A utility function to find the
     # vertex with minimum dist value, from
@@ -44,8 +43,16 @@ class Graph:
 
         # A utility function to print
 
-    # the constructed distance
-    # array
+    def printTest(self, j):
+
+        # Base Case : If j is source
+        if self.parent[j] == -1:
+            print (j),
+            return
+        self.printTest(self.test[j])
+        print (j),
+
+    # the constructed distance array
     def printSolution(self, src):
         print("Vertex \t\tDistance from Source\tPath")
         for i in range(1, len(self.dist)):
@@ -66,6 +73,8 @@ class Graph:
         # Parent array to store
         # shortest path tree
         self.parent = [-1] * self.row
+
+        self.test = [-1] * self.row
 
         # Distance of source vertex
         # from itself is always 0
@@ -97,10 +106,13 @@ class Graph:
                 an edge from u to i, and total weight of path from 
                 src to i through u is smaller than current value of 
                 dist[i]'''
-                if self.graph[u][i] and i in queue:
-                    if self.dist[u] + self.graph[u][i] < self.dist[i]:
-                        self.dist[i] = self.dist[u] + self.graph[u][i]
-                        self.parent[i] = u
+
+                #The variable index_third_dimension is to get the value of the third dimension in the array
+                for index_third_dimension in range(self.size_third_dimension):
+                     if self.graph[u][i][index_third_dimension] and i in queue:
+                         if self.dist[u] + self.graph[u][i][index_third_dimension] < self.dist[i]:
+                             self.dist[i] = self.dist[u] + self.graph[u][i][index_third_dimension]
+                             self.parent[i] = u
 
                         # print the constructed distance array
         self.printSolution(src)
