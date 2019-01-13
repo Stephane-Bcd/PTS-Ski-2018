@@ -1,6 +1,6 @@
 import Compute
 #If you have an error with "import numpy as np", it is because you need to install this library
-#If you use Pycharm there is a easy way : File -> Settings -> Project : 'name project' -> project interpreter -> '+'
+#If you use Pycharm there is a easy way : File -> Settings -> Project : 'name project' -> project interpreter -> '+' -> select the nyumpy library
 import numpy as np
 
 # This function allows to count the number of occurrences in a list
@@ -25,7 +25,8 @@ def Find_the_biggest_occurence(array_occurence, size_array) :
 
 #This function check the number of data int the file, and create a adjacency matrix with the right size for the graph
 # name_piks : output parameter
-def Create_Adjacency_Matrix(name_piks) :
+# name_piks : output parameter
+def Create_Adjacency_Matrix(name_peaks, name_paths) :
 
     # This variable "paths_and_occurences" contains all the paths and their occurrences, we use it to know the size of the third dimension
     paths_and_occurences = []
@@ -72,11 +73,12 @@ def Create_Adjacency_Matrix(name_piks) :
                 if input_data_type_index == 0:  # for points
                     print("Point: " + str(line))
                     input_data_observed_points_count += 1
-                    name_piks.append(line[1])
+                    name_peaks.append(line[1])
                 elif input_data_type_index == 1:  # for paths
                     print("Path: " + str(line))
                     value = line[3] + line[4]
                     paths_and_occurences.append(value)
+                    name_paths[input_data_observed_paths_count] = (line[1],line[2],line[3],line[4])
                     input_data_observed_paths_count += 1
 
 
