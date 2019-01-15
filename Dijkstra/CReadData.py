@@ -1,33 +1,15 @@
-import Compute
 #If you have an error with "import numpy as np", it is because you need to install this library
 #If you use Pycharm there is a easy way : File -> Settings -> Project : 'name project' -> project interpreter -> '+' -> select the nyumpy library
 import numpy as np
+import CComputeData
 
-# This function allows to count the number of occurrences in a list
-def countX(lst, x):
-    count = 0
-    for element in lst:
-        if (element == x):
-            count = count + 1
-    return count
+# Class to represent a graph
 
-# This function allows to find the biggest occurrence in a list
-def Find_the_biggest_occurence(array_occurence, size_array) :
 
-    valueMax= 0
-
-    for index in range(size_array):
-        value = countX(array_occurence, array_occurence[index])
-        if (value > valueMax ):
-            valueMax = value
-
-    return valueMax
-
-#This function check the number of data int the file, and create a adjacency matrix with the right size for the graph
+# This function check the number of data int the file, and create a adjacency matrix with the right size for the graph
 # name_piks : output parameter
 # name_piks : output parameter
-def Create_Adjacency_Matrix(name_peaks, name_paths) :
-
+def Create_Adjacency_Matrix(name_peaks, name_paths):
     # This variable "paths_and_occurences" contains all the paths and their occurrences, we use it to know the size of the third dimension
     paths_and_occurences = []
 
@@ -46,7 +28,7 @@ def Create_Adjacency_Matrix(name_peaks, name_paths) :
     first_iteration_on_file = True
 
     try:
-        #You can choose the path of your file here :
+        # You can choose the path of your file here :
         fp = open('./data_arcs.txt', 'r')
         lines = fp.readlines()
         for line in lines:
@@ -78,9 +60,8 @@ def Create_Adjacency_Matrix(name_peaks, name_paths) :
                     print("Path: " + str(line))
                     value = line[3] + line[4]
                     paths_and_occurences.append(value)
-                    name_paths[input_data_observed_paths_count] = (line[1],line[2],line[3],line[4])
+                    name_paths[input_data_observed_paths_count] = (line[1], line[2], line[3], line[4])
                     input_data_observed_paths_count += 1
-
 
         print("Supposed points count: " + str(input_data_supposed_points_count))
         print("Observed points count: " + str(input_data_observed_points_count))
@@ -91,8 +72,8 @@ def Create_Adjacency_Matrix(name_peaks, name_paths) :
         # we create the matrix only if the data are correct :
         if input_data_supposed_points_count == input_data_observed_points_count and input_data_supposed_paths_count == input_data_observed_paths_count:
 
-            #Allows to know the size of the third dimension before to create it
-            size_third_dimension = Find_the_biggest_occurence(paths_and_occurences,int(input_data_supposed_paths_count))
+            # Allows to know the size of the third dimension before to create it
+            size_third_dimension = CComputeData.Find_the_biggest_occurence(paths_and_occurences, int(input_data_supposed_paths_count))
 
             # To create the matrix for our data, the matrix is initialized with 0
             graph = np.zeros(input_data_observed_points_count * input_data_observed_points_count * size_third_dimension)
@@ -105,10 +86,10 @@ def Create_Adjacency_Matrix(name_peaks, name_paths) :
     except FileNotFoundError as e:
         print(e)
 
-#This function will fill a adjacency matrix with the data from a file
+
+# This function will fill a adjacency matrix with the data from a file
 # graph : input parameter
 def Fill_Adjacency_Matrix(graph):
-
     # This variable "peaks" contains all the peaks of our graph
     peaks = {}
     # index to know if actual data is point or path
@@ -122,7 +103,7 @@ def Fill_Adjacency_Matrix(graph):
     first_iteration_on_file = True
 
     try:
-        #You can choose the path of your file here :
+        # You can choose the path of your file here :
         fp = open('./data_arcs.txt', 'r')
         lines = fp.readlines()
         for line in lines:
@@ -154,7 +135,7 @@ def Fill_Adjacency_Matrix(graph):
                     # To get the height in the line about the second  current peak, it is the peak destination
                     weightPeakB = int(lineFromPeakB[2])
 
-                    #I initialized the variable 'condition' to true to simulate a loop 'Do while' instead a loop 'while'
+                    # I initialized the variable 'condition' to true to simulate a loop 'Do while' instead a loop 'while'
                     condition = True
                     indice = 0
 
@@ -164,12 +145,14 @@ def Fill_Adjacency_Matrix(graph):
                         # If the value in the array is 0 -> there is no path, so we can put the value
                         if graph[int(line[3]) - 1][int(line[4]) - 1][indice] == 0:
                             # compute_weight() : function to compute the weight of the vertices and return it (in secondes)
-                             graph[int(line[3]) - 1][int(line[4]) - 1][indice] = Compute.compute_weight(line[2], abs(weightPeakA - weightPeakB), line[1])
-                             condition = False
-                        #If there is a path, we have to use the third dimension of the array, so we increment the value
+                            graph[int(line[3]) - 1][int(line[4]) - 1][indice] = CComputeData.compute_weight(line[2], abs(
+                                weightPeakA - weightPeakB), line[1])
+                            condition = False
+                        # If there is a path, we have to use the third dimension of the array, so we increment the value
                         else:
-                            indice = indice+1
+                            indice = indice + 1
         fp.close()
 
     except FileNotFoundError as e:
         print(e)
+

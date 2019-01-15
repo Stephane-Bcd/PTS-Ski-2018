@@ -41,23 +41,25 @@ class Graph:
         self.printPath(self.parent[j])
         print (j),
 
-        # A utility function to print
-
-    def printTest(self, j):
-
-        # Base Case : If j is source
-        if self.parent[j] == -1:
-            print (j),
-            return
-        self.printTest(self.test[j])
-        print (j),
-
     # the constructed distance array
     def printSolution(self, src):
         print("Vertex \t\tDistance from Source\tPath")
         for i in range(1, len(self.dist)):
             print("\n%d --> %d \t\t%d \t\t\t\t\t" % (src, i, self.dist[i])),
             self.printPath(i)
+
+    # This method allows to get the shortest path to a node 'goal', we return the path with the list 'path'
+    def get_shortest_path(self, goal, path):
+        # Base Case : If 'goal' is source
+        if self.parent[goal] == -1:
+            path.append(goal)
+            return
+        self.get_shortest_path(self.parent[goal], path)
+        path.append(goal)
+
+    # This method allows to get the shortest distance to a node  'goal"
+    def get_shortest_distance(self, goal):
+        return self.dist[goal]
 
     '''Function that implements Dijkstra's single source shortest path 
     algorithm for a graph represented using adjacency matrix 
@@ -117,15 +119,3 @@ class Graph:
                         # print the constructed distance array
         self.printSolution(src)
 
-    # This method allows to get the shortest path to a node 'goal', we return the path with the list 'path'
-    def get_shortest_path(self, goal, path):
-        # Base Case : If 'goal' is source
-        if self.parent[goal] == -1:
-            path.append(goal)
-            return
-        self.get_shortest_path(self.parent[goal], path)
-        path.append(goal)
-
-    # This method allows to get the shortest distance to a node  'goal"
-    def get_shortest_distance(self, goal):
-        return self.dist[goal]
