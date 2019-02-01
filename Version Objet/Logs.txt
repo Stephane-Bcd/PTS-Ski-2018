@@ -98,3 +98,13 @@
 2019-02-01 12:23:49,259 - SkiProgram.Dijkstra - INFO - Dijkstra algorithm started in not verbose mode.
 2019-02-01 12:23:49,260 - SkiProgram.Dijkstra - INFO - Execution time: 0.0011386871337890625
 2019-02-01 12:23:49,260 - Test file - INFO - Test Program stopped without problem ! :)
+2019-02-01 12:36:19,381 - Test file - INFO - Test Program started ...
+2019-02-01 12:36:19,493 - SkiProgram.import_nodes_and_edges - INFO - Nodes and Edges importation started in not verbose mode.
+2019-02-01 12:36:19,498 - SkiProgram.import_nodes_and_edges - INFO - Data insertion finished successfully !
+2019-02-01 12:36:19,499 - Test file - INFO - Starting to generate current flows file in not verbose mode ...
+2019-02-01 12:36:19,539 - Test file - INFO - Current flows file generated !
+2019-02-01 12:36:19,540 - SkiProgram.import_current_flows - INFO - Current Flows importation started in not verbose mode.
+2019-02-01 12:36:19,541 - SkiProgram.import_current_flows - INFO - Current Flows importation successfully !
+2019-02-01 12:36:19,541 - SkiProgram.Dijkstra - INFO - Dijkstra algorithm started in not verbose mode.
+2019-02-01 12:36:19,542 - SkiProgram.Dijkstra - INFO - Execution time: 0.0010991096496582031
+2019-02-01 12:36:19,543 - Test file - INFO - Test Program stopped without problem ! :)
