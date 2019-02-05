@@ -1,43 +1,12 @@
 import SkiProgram
 import LogsService
-import random
-import os
+import json
 
 logger = LogsService.initialise_logs("Test file", "./Logs.txt")
 logger.info ("Test Program started ...")
 print ("Test Program started ...")
 
-'''
-	===========================================================
-	FUNCTION TO GENERATE A CURRENT FLOWS FILE
-	It takes max flows and transformes it to a +/-30% new value: the current flow
-	===========================================================
-'''
 
-def generate_random_current_flows ( seed, graph, output_file_path, verbose = False):
-	logger.info ("Starting to generate current flows file in " + ("verbose" if verbose else "not verbose") + " mode ...")
-	print ("Starting to generate current flows file in " + ("verbose" if verbose else "not verbose") + " mode ...")
-	
-	
-	if os.path.exists(output_file_path):
-		os.remove(output_file_path)
-	
-	random.seed(seed)
-	
-	for edge in list(graph.edges(data=True)):
-		edge_attributes = edge[2]
-		max_flow = edge_attributes['max_flow']
-		id = edge_attributes['id']
-		
-		random_multiplier = float(random.randrange(70, 130))/100.0
-		with open(output_file_path, 'a') as the_file:
-			the_file.write(str(id) + '\t' + str(500 if max_flow == float("Inf") else (max_flow * random_multiplier) ) + '\n')
-		
-		the_file.close()
-		
-	logger.info ("Current flows file generated !")
-	print ("Current flows file generated !")
-	
 '''
 	===========================================================
 	MAIN TEST EXECUTION SCRIPT
@@ -46,41 +15,48 @@ def generate_random_current_flows ( seed, graph, output_file_path, verbose = Fal
 '''
 
 try:
-	#We first insert all Nodes and Edges and calculate all attributes
-	SkiProgram.import_nodes_and_edges('./data_arcs.txt', False)
-
-	#Generating simulated current flows data file
-	generate_random_current_flows (100, SkiProgram.GraphMain, "./current_flows.txt", False)
-
-	#Importing current flows values
-	SkiProgram.import_current_flows("./current_flows.txt", False)
-
+	
+	
+	#Creating and initialising graph with files data
+	graph = SkiProgram.load_all_graph_input_data('./data_arcs.txt', "./current_flows.txt", "Main Graph")
+	
+	#Index Nodes and Edges for next steps
+	index_nodes_name_to_key = {}
+	index_edges_2dkey_to_object = {}
+	
+	index_nodes_name_to_key = SkiProgram.index_nodes_by_name (index_nodes_name_to_key, graph, False)
+	index_edges_2dkey_to_object = SkiProgram.index_edges_by_2D_key (index_edges_2dkey_to_object, graph, False)
+	
+	#Displaying final graph
+	SkiProgram.display_graph_console(graph)
+	
+	'''
+	#Test Get data
+	#Get node by id
+	print("Get node by id (2) result:\n"+ str(SkiProgram.get_node_by_id (graph, 2)))
+	#Get node by name
+	print("Get node by name (\'arc2000\') result:\n"+ str(SkiProgram.get_node_by_name (graph, index_nodes_name_to_key, "arc2000")))
+	#Get edge by 3D ID
+	print("Get edge by 3d id ([2,1,2]) result:\n"+str(SkiProgram.get_edge_by_3D_id (graph, [2, 1, 2])))
+	print("Get edge by 3d id ([2,1,0]) result:\n"+str(SkiProgram.get_edge_by_3D_id (graph, [2, 1, 0])))
+	#Get edge(s) by 2D ID
+	print("Get edge by 2d id ([2-1]) result:\n"+str(SkiProgram.get_edges_by_2D_id (graph, index_edges_2dkey_to_object, [2,1])))
+	'''
+	
 	#Executing Dijkstra algorithm
 	source = "arc2000"
 	target = "villaroger"
-	Dijkstra_result = SkiProgram.Dijkstra (source, target, "normal_weight", False)
 	
-	print("\n---------------------------------------------------")
-	print("Instructions to go from " + source + " to " + target + "\n\n")
+	res_Dijkstra = SkiProgram.Dijkstra (graph, source, target, "normal_weight", index_nodes_name_to_key, index_edges_2dkey_to_object, False)
+	#print(json.dumps(res_Dijkstra, indent=4, sort_keys=True))
 	
-	first_Node = True
-	first_Edge = True
-	for element in Dijkstra_result["mixed"]:
-		if element["object_type"] == "node":
-			if first_Node:
-				print("You're actually located at " + element["name"] + " station, with a "+ str(element["altitude"]) + "m high altitude.")
-			else:
-				print("Then you will arrive at " + element["name"] + " station, with a "+ str(element["altitude"]) + "m high altitude.")
-			first_Node = False
-		else:
-			if first_Edge:
-				print("In order to go to your destination, go first through " + element["name"] + " path of " + element["type"] + " type.")
-			print("It will take you  " + str(element["normal_weight"]) + " seconds to go to the next station.\n")
+	print(SkiProgram.shortest_path_result_into_text(res_Dijkstra))
 	
-	print ("Total travel duration: " + str(Dijkstra_result["path_length"]) + " seconds ! Enjoy !")
+	
+	
 
-	logger.info ("Test Program stopped without problem ! :)")
 	print ("Test Program stopped without problem ! :)")
+	logger.info ("Test Program stopped without problem ! :)")
 	
 except Exception as e:
 	print(e)
