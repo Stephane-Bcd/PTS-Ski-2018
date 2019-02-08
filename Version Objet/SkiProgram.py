@@ -340,11 +340,10 @@ def insert_nodes_and_edges(graph, nodes, edges, verbose = False):
 	logger.info("Nodes and Edges insertion finished successfully")
 	
 
-def index_nodes_by_name (in_out_index, graph, verbose = False):
+def index_nodes_by_name (graph, verbose = False):
 	'''
 	===========================================================================
 	FUNCTION TO INDEX NODES BY NAMES
-	in_out_index: index containing Name(Node) => Id(Node) (it has to be a JSON {})
 	graph: graph which the nodes need to be indexed
 	verbose: True if you want all informations in the log file
 	===========================================================================
@@ -370,11 +369,10 @@ def index_nodes_by_name (in_out_index, graph, verbose = False):
 	return in_out_index
 	
 	
-def index_edges_by_2D_key (in_out_index, graph, verbose = False):
+def index_edges_by_2D_key (graph, verbose = False):
 	'''
 	===========================================================================
 	FUNCTION TO INDEX EDGES BY 2D KEYS
-	in_out_index: index containing 2D Id(Edge) => 3D ids(Edge) (it has to be a JSON {})
 	graph: graph which the edges need to be indexed
 	verbose: True if you want all informations in the log file
 	===========================================================================
@@ -469,7 +467,7 @@ def get_edges_by_2D_id (graph, index_edges_by_2D_key, edge_2d_id):
 	return edges_list
 
 
-def get_shortest_edge_between_two_nodes(graph, node1_id, node2_id, index_edges_by_2D_key, weight, verbose = False):
+def get_shortest_edge_between_two_nodes(graph, node1_id, node2_id, index_edges_by_2D_key, weight, filter_edges, verbose = False):
 	'''
 	===========================================================================
 	FUNCTION TO GET THE SHORTEST EDGE BETWEEN TWO NODES
@@ -490,7 +488,7 @@ def get_shortest_edge_between_two_nodes(graph, node1_id, node2_id, index_edges_b
 	shortest_edge[weight] = float("Inf")
 	
 	for edge in parallel_edges:
-		if shortest_edge[weight] > edge[weight]:
+		if shortest_edge[weight] > edge[weight] and edge["edge_type"] not in filter_edges:
 			shortest_edge = edge
 	
 	return shortest_edge
@@ -624,6 +622,31 @@ def compute_interesting_path_weight (graph, verbose = False):
 	
 	if verbose: print("Edges with interesting paths weights:\n" + json.dumps(list(graph.edges(data=True, keys=True)), indent=4, sort_keys=True))
 	if verbose: logger.info("Edges with interesting paths weights:\n" + json.dumps(list(graph.edges(data=True, keys=True)), indent=4, sort_keys=True))
+	
+	#Ending message
+	print("Interesting paths weights computation finished successfully")
+	logger.info("Interesting paths weights computation finished successfully")
+
+def compute_coef_for_flows(flow_value, max_flow, normal_weight):
+	return normal_weight * (max_flow/flow_value)
+
+	
+def compute_less_flow_weight (graph, verbose = False):
+	'''
+	===========================================================================
+	FUNCTION THAT COMPUTES A WEIGHT USED TO FAVORISE DESCENDS USING A COEFFICIENT
+	coef: This coefficient is calculated using search_coef_favorise_descents (graph, verbose = False) function
+	graph: graph for which this weight has to be calculated
+	verbose: True if you want all informations in the log file
+	===========================================================================
+	'''
+	
+	#initialising logs and Intro Message
+	logger = LogsService.initialise_logs(__name__ + ".compute_interesting_path_weight", logs_file_path)
+	print("Interesting paths weights computation started in " + ("verbose" if verbose else "not verbose") + " mode.")
+	logger.info("Interesting paths weights computation started in " + ("verbose" if verbose else "not verbose") + " mode." )
+	
+	
 	
 	#Ending message
 	print("Interesting paths weights computation finished successfully")
@@ -819,7 +842,7 @@ def load_all_graph_input_data(edges_nodes_input_file, actual_flows_input_file, g
 	return graph
 
 
-def Dijkstra (graph, source, target, weight, index_nodes_name_to_key, index_edges_2dkey_to_object, verbose = False):
+def Dijkstra (graph, source, target, weight, index_nodes_name_to_key, index_edges_2dkey_to_object, filter_edges, verbose = False):
 	'''
 	===========================================================================
 	FUNCTION TO EXECUTE DIJKSTRA ALGORITHM FOR SHORTEST PATH
@@ -828,6 +851,7 @@ def Dijkstra (graph, source, target, weight, index_nodes_name_to_key, index_edge
 	weight: string that defines which weight has to be used to calculate shortest path
 	index_nodes_name_to_key: index containing Name(Node) => Id(Node)
 	index_edges_2dkey_to_object: index containing 2D Id(Edge) => 3D ids(Edge)
+	filter_edges: filter on edges (a list such as ["N", "R"], let [] if none
 	verbose: True if you want to print everything
 	===========================================================================
 	'''
@@ -839,16 +863,27 @@ def Dijkstra (graph, source, target, weight, index_nodes_name_to_key, index_edge
 	print('Dijkstra algorithm started in ' + ("verbose" if verbose else "not verbose") + " mode.")
 	logger.info('Dijkstra algorithm started in ' + ("verbose" if verbose else "not verbose") + " mode." )
 	
+	#test if there is any filter
+	is_filtered = len(filter_edges) > 0
+	
+	#if there are filters, we create a filtered graph
+	if is_filtered:
+		graph = get_filtered_graph_on_edge_type(graph, filter_edges, verbose)
+		index_nodes_name_to_key = index_nodes_by_name (graph, verbose)
+		index_edges_2dkey_to_object = index_edges_by_2D_key (graph, verbose)
+	
 	#Return JSON variable
 	final_res = {
 		"source": source,
 		"target": target,
 		"execution_mode": "Dijkstra",
+		"used_weight": weight,
 		"execution_time": 0.0,
 		"nodes": [],
 		"edges": [],
 		"mixed": [],
-		"path_time": 0.0
+		"path_time": 0.0,
+		"filter_on": filter_edges
 	}
 	
 	#Checking if source and target are Names or Ids
@@ -874,7 +909,7 @@ def Dijkstra (graph, source, target, weight, index_nodes_name_to_key, index_edge
 		
 		#Here are the two results of Networkx execution
 		shortest_path = nx.dijkstra_path(graph, source, target, weight=weight)
-		path_time = nx.dijkstra_path_length(graph, source, target, weight=weight)
+		path_time = 0.0
 		
 		#Filling final result JSON with Edges and nodes
 		precedent_node_id = None
@@ -882,9 +917,10 @@ def Dijkstra (graph, source, target, weight, index_nodes_name_to_key, index_edge
 			
 			#for edges
 			if node_id and precedent_node_id:
-				current_edge = get_shortest_edge_between_two_nodes(graph, precedent_node_id, node_id, index_edges_2dkey_to_object, weight, verbose)
+				current_edge = get_shortest_edge_between_two_nodes(graph, precedent_node_id, node_id, index_edges_2dkey_to_object, weight, filter_edges, verbose)
 				final_res["edges"].append(current_edge)
 				final_res["mixed"].append(current_edge)
+				path_time += current_edge["normal_weight"]
 			
 			#for nodes
 			current_node = get_node_by_id (graph, node_id)
@@ -920,21 +956,37 @@ def shortest_path_result_into_text (JSON):
 	
 	result_text += "\n---------------------------------------------------\n"
 	result_text += "Execution mode: "+JSON["execution_mode"]+" , Execution time: "+str(JSON["execution_time"])
+	if len(JSON["filter_on"]) > 0:
+		result_text +="\nFilter on:"
+		for filtr in JSON["filter_on"]:
+			result_text += " \'" + filtr + "\'"
+	else:
+		result_text +="\nNo filter"
+	
+	result_text += ", Type of search: "
+	
+	if JSON["used_weight"] == "normal_weight":
+		result_text += "Shortest path"
+	elif JSON["used_weight"] == "most_interesting_path_weight":
+		result_text += "Shortest path fovorizing descents"
+	else:
+		result_text += "Unknown"
+	
 	result_text += "\n---------------------------------------------------\n\n"
-	result_text += "Instructions to go from " + JSON["source"] + " to " + JSON["target"] + "\n\n"
+	result_text += "Instructions to go from \'" + JSON["source"] + "\' to \'" + JSON["target"] + "\'\n\n"
 	
 	first_Node = True
 	first_Edge = True
 	for element in JSON["mixed"]:
 		if element["object_type"] == "node":
 			if first_Node:
-				result_text += "You're actually located at " + element["node_name"] + " station, with a "+ str(element["node_altitude"]) + "m high altitude.\n"
+				result_text += "You're actually located at \'" + element["node_name"] + "\' station, with a "+ str(element["node_altitude"]) + "m high altitude.\n"
 			else:
-				result_text += "Then you will arrive at " + element["node_name"] + " station, with a "+ str(element["node_altitude"]) + "m high altitude.\n"
+				result_text += "Then you will arrive at \'" + element["node_name"] + "\' station, with a "+ str(element["node_altitude"]) + "m high altitude.\n"
 			first_Node = False
 		else:
 			if first_Edge:
-				result_text += "In order to go to your destination, go first through " + element["edge_name"] + " path of " + element["edge_type"] + " type.\n"
+				result_text += "In order to go to your destination, go first through \'" + element["edge_name"] + "\' path of \'" + element["edge_type"] + "\' type.\n"
 			result_text += "It will take you  " + str(element["normal_weight"]) + " seconds to go to the next station.\n\n"
 	
 	result_text += "Total travel duration: " + str(JSON["path_time"]) + " seconds ! Enjoy !\n"

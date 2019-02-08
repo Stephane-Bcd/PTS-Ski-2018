@@ -19,14 +19,12 @@ try:
 	
 	
 	#Creating and initialising graph with files data
-	graph = SkiProgram.load_all_graph_input_data('./data_arcs.txt', "./current_flows.txt", "Main Graph")
+	graph = SkiProgram.load_all_graph_input_data('./data_arcs.txt', "./current_flows.txt", "Main Graph", True)
 	
 	#Index Nodes and Edges for next steps
-	index_nodes_name_to_key = {}
-	index_edges_2dkey_to_object = {}
 	
-	index_nodes_name_to_key = SkiProgram.index_nodes_by_name (index_nodes_name_to_key, graph, False)
-	index_edges_2dkey_to_object = SkiProgram.index_edges_by_2D_key (index_edges_2dkey_to_object, graph, False)
+	index_nodes_name_to_key = SkiProgram.index_nodes_by_name (graph, False)
+	index_edges_2dkey_to_object = SkiProgram.index_edges_by_2D_key (graph, False)
 	
 	#Displaying final graph
 	#SkiProgram.display_graph_console(graph)
@@ -48,10 +46,21 @@ try:
 	source = "arc2000"
 	target = "villaroger"
 	
-	res_Dijkstra = SkiProgram.Dijkstra (graph, source, target, "normal_weight", index_nodes_name_to_key, index_edges_2dkey_to_object, False)
-	#print(json.dumps(res_Dijkstra, indent=4, sort_keys=True))
-	
+	#dijkstra with filter
+	res_Dijkstra = SkiProgram.Dijkstra (graph, source, target, "normal_weight", index_nodes_name_to_key, index_edges_2dkey_to_object, [ "N", "R"], False)
 	print(SkiProgram.shortest_path_result_into_text(res_Dijkstra))
+	
+	#dijkstra without filter
+	res_Dijkstra = SkiProgram.Dijkstra (graph, source, target, "normal_weight", index_nodes_name_to_key, index_edges_2dkey_to_object, [], False)
+	print(SkiProgram.shortest_path_result_into_text(res_Dijkstra))
+	
+	#dijkstra with filter and with most interesting path
+	source = 'villaroger'
+	target = '37'
+	res_Dijkstra = SkiProgram.Dijkstra (graph, source, target, "most_interesting_path_weight", index_nodes_name_to_key, index_edges_2dkey_to_object, [ ], False)
+	print(SkiProgram.shortest_path_result_into_text(res_Dijkstra))
+	
+	
 	
 	'''
 	#create a path graph
@@ -59,11 +68,13 @@ try:
 	print (g.edges(data=True))
 	'''
 	
+	'''
 	#Create a subgraph with filtered edges
 	graph_dificulty_1 = SkiProgram.get_filtered_graph_on_edge_type(graph, ["N", "R"])
 	graph_dificulty_2 = SkiProgram.get_filtered_graph_on_edge_type(graph, ["N"])
 	graph_dificulty_3 = graph
 	SkiProgram.display_graph_console(graph_dificulty_1)
+	'''
 	
 	
 
