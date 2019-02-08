@@ -254,6 +254,38 @@ def clear_graph(graph, verbose = False):
 	logger.info("Graph \'" + graph.graph["name"] + "\' cleared successfully")
 	
 
+def get_filtered_graph_on_edge_type(graph, filter_list, verbose = False):
+	'''
+	===========================================================================
+	FUNCTION TO GET A SUBGRAPH WITH FILTERED EDGES TYPES
+	graph: graph to be filtered
+	filter_list: list of edges types values to be filtered
+	verbose: True if you want all informations in the log file
+	returns a new graph with filtered edges on edges types
+	===========================================================================
+	'''
+	
+	#initialising logs and Intro Message
+	logger = LogsService.initialise_logs(__name__ + ".get_filtered_graph_on_edge_type", logs_file_path)
+	print("Edges filtering started in " + ("verbose" if verbose else "not verbose") + " mode.")
+	logger.info("Edges filtering started in " + ("verbose" if verbose else "not verbose") + " mode." )
+	
+	edges = graph.edges(data=True, keys=True)
+	filtered_edges = []
+	
+	for edge in edges:
+		if edge[3]["edge_type"] not in filter_list:
+			filtered_edges.append((edge[0], edge[1], edge[2]))
+	
+		
+	#Ending message
+	print("Edges filtering finished successfully")
+	logger.info("Edges filtering finished successfully")
+	
+	
+	return graph.edge_subgraph(filtered_edges)
+
+
 def insert_nodes_and_edges(graph, nodes, edges, verbose = False):
 	'''
 	===========================================================================
@@ -873,6 +905,7 @@ def Dijkstra (graph, source, target, weight, index_nodes_name_to_key, index_edge
 	final_res["execution_time"] = end - start
 	
 	return final_res
+
 
 def shortest_path_result_into_text (JSON):
 	'''

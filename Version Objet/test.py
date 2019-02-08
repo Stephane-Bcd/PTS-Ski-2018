@@ -1,6 +1,7 @@
 import SkiProgram
 import LogsService
 import json
+import networkx as nx
 
 logger = LogsService.initialise_logs("Test file", "./Logs.txt")
 logger.info ("Test Program started ...")
@@ -28,7 +29,7 @@ try:
 	index_edges_2dkey_to_object = SkiProgram.index_edges_by_2D_key (index_edges_2dkey_to_object, graph, False)
 	
 	#Displaying final graph
-	SkiProgram.display_graph_console(graph)
+	#SkiProgram.display_graph_console(graph)
 	
 	'''
 	#Test Get data
@@ -52,6 +53,17 @@ try:
 	
 	print(SkiProgram.shortest_path_result_into_text(res_Dijkstra))
 	
+	'''
+	#create a path graph
+	g = nx.path_graph(100,nx.MultiDiGraph(name = "test"))
+	print (g.edges(data=True))
+	'''
+	
+	#Create a subgraph with filtered edges
+	graph_dificulty_1 = SkiProgram.get_filtered_graph_on_edge_type(graph, ["N", "R"])
+	graph_dificulty_2 = SkiProgram.get_filtered_graph_on_edge_type(graph, ["N"])
+	graph_dificulty_3 = graph
+	SkiProgram.display_graph_console(graph_dificulty_1)
 	
 	
 
