@@ -627,6 +627,7 @@ def compute_interesting_path_weight (graph, verbose = False):
 	print("Interesting paths weights computation finished successfully")
 	logger.info("Interesting paths weights computation finished successfully")
 
+
 def compute_coef_for_flows(flow_value, max_flow, normal_weight):
 	return normal_weight * (max_flow/flow_value)
 

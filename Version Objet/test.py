@@ -2,6 +2,7 @@ import SkiProgram
 import LogsService
 import json
 import networkx as nx
+import mockers
 
 logger = LogsService.initialise_logs("Test file", "./Logs.txt")
 logger.info ("Test Program started ...")
@@ -18,6 +19,7 @@ print ("Test Program started ...")
 try:
 	
 	
+	
 	#Creating and initialising graph with files data
 	graph = SkiProgram.load_all_graph_input_data('./data_arcs.txt', "./current_flows.txt", "Main Graph", True)
 	
@@ -27,7 +29,7 @@ try:
 	index_edges_2dkey_to_object = SkiProgram.index_edges_by_2D_key (graph, False)
 	
 	#Displaying final graph
-	#SkiProgram.display_graph_console(graph)
+	SkiProgram.display_graph_console(graph)
 	
 	'''
 	#Test Get data

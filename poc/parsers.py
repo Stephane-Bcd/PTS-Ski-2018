@@ -1,6 +1,9 @@
 from .classes import VertexRaw, EdgeRaw, Vertex, Edge
 
+'''
+	Don't need to integrate because parsers are already implemented in ProgramSki
 
+'''
 def parse_vertex_file(filename: str):
     vertices = {}
 

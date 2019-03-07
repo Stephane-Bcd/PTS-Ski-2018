@@ -1,6 +1,9 @@
 from enum import IntEnum
 
+'''
+	Could be interesting to integrate but we prefer to continue other modifications
 
+'''
 class Timing:
     @staticmethod
     def v(height_delta: int):
@@ -53,6 +56,9 @@ class Timing:
         elif (src == 'arc1600' and dest == 'arc1800') or (src == 'arc1800' and dest == 'arc1600'):
             return 30
 
+'''
+	Don't know how to use it efficiently in the project
+'''
 
 class Flow(IntEnum):
     TPH = 1200
@@ -62,7 +68,9 @@ class Flow(IntEnum):
     TK = 800
     BUS = 300
 
-
+'''
+	All the following Classes are not useful because NetworkX alredy returns some JSON data
+'''
 class VertexRaw:
     def __init__(self, vertex_id: int, name: str, altitude: int):
         self.vertex_id = vertex_id
