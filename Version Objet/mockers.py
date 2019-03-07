@@ -2,8 +2,12 @@ from random import randint, choice
 from time import time
 
 '''
-	write_graph this function works well and generates a real like file for tests.
-	It will be integrated in our project by copying the file and just accessing it using an import
+	===========================================================================
+	FUNCTION TO GENERATE A TEST GRAPH FILE
+	vertex_count: number of needed vertex for new graph
+	edge_count: number of needed edges for new graph
+	filename: output file name
+	===========================================================================
 '''
 
 def write_graph(vertex_count: int = 37, edge_count: int = 95, filename: str = './graph_{}_{}_{}.txt'):
