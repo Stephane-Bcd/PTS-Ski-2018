@@ -1,5 +1,6 @@
 from random import randint, choice
 from time import time
+import os
 
 '''
 	===========================================================================
@@ -12,6 +13,8 @@ from time import time
 
 def write_graph(vertex_count: int = 37, edge_count: int = 95, filename: str = './graph_{}_{}_{}.txt'):
     vertices, edges = generate_graph(vertex_count, edge_count)
+
+    if os.path.exists(filename): os.remove(filename)
 
     with open(filename.format(vertex_count, edge_count, int(time())), 'x') as gf:
         gf.write('{}\n'.format(vertex_count))

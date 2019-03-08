@@ -891,18 +891,10 @@ def Dijkstra (graph, source, target, weight, index_nodes_name_to_key, index_edge
 	
 	if verbose: logger.info("Selected source: " + str(source))
 	if verbose: print("Selected source: " + str(source))
-	if isinstance(source, str): #if string entered, we check in names dictionnary to know the key
-		source = get_node_by_name(graph, index_nodes_name_to_key, source)["node_id"]
-		if verbose: logger.info("Selected source corresponding id: " + str(source))
-		if verbose: print("Selected source corresponding id: " + str(source))
 		
 		
 	if verbose: logger.info("Selected target: " + str(target))
 	if verbose: print("Selected target: " + str(target))
-	if isinstance(target, str): #if string entered, we check in names dictionnary to know the key
-		target = get_node_by_name(graph, index_nodes_name_to_key, target)["node_id"]
-		if verbose: logger.info("Selected target corresponding id: " + str(target))
-		if verbose: print("Selected target corresponding id: " + str(target))
 	
 	
 	#Dijkstra execution if path exists
@@ -939,7 +931,7 @@ def Dijkstra (graph, source, target, weight, index_nodes_name_to_key, index_edge
 	logger.info("Execution time: " + str(end - start))
 	
 	#Setting execution time in final result
-	final_res["execution_time"] = end - start
+	final_res["execution_time"] = str(end - start)
 	
 	return final_res
 
@@ -974,7 +966,7 @@ def shortest_path_result_into_text (JSON):
 		result_text += "Unknown"
 	
 	result_text += "\n---------------------------------------------------\n\n"
-	result_text += "Instructions to go from \'" + JSON["source"] + "\' to \'" + JSON["target"] + "\'\n\n"
+	result_text += "Instructions to go from \'" + str(JSON["source"]) + "\' to \'" + str(JSON["target"]) + "\'\n\n"
 	
 	first_Node = True
 	first_Edge = True
