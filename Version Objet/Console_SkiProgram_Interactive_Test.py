@@ -1,8 +1,8 @@
-import SkiProgram
-import LogsService
+import Program_Ski_Libraries.SkiProgram as SkiProgram
+import Program_Ski_Libraries.LogsService as LogsService
+import Program_Ski_Libraries.mockers as mockers
 import json
 import networkx as nx
-import mockers
 import os
 
 
@@ -162,7 +162,7 @@ def ask_for_list(question):
 	
 
 # Displaying header
-logger = LogsService.initialise_logs("Ski Program Interactive (Console): TEST", "./Logs.txt")
+logger = LogsService.initialise_logs("Ski Program Interactive (Console): TEST", "./Input_Or_Generated_Files/Logs.txt")
 
 logger.info ("Console interactive test program started ...")
 print ("Console interactive test program started ...")
@@ -182,8 +182,8 @@ print (header_message)
 bool_exit = False
 
 # Path to graph data file
-graph_file_path = './data_arcs.txt'
-flows_file_path = "./current_flows.txt"
+graph_file_path = './Input_Or_Generated_Files/data_arcs.txt'
+flows_file_path = "./Input_Or_Generated_Files/current_flows.txt"
 
 try:
 	
@@ -207,7 +207,7 @@ try:
 			
 	#If we want to generate a graph
 	else:
-		graph_file_path = './data_arcs_generated.txt'
+		graph_file_path = './Input_Or_Generated_Files/data_arcs_generated.txt'
 		_vertex_nb = 50
 		_edges_nb = 200
 		
@@ -222,7 +222,7 @@ try:
 		quit()
 	
 	#Creating and initialising graph with files data
-	graph = SkiProgram.load_all_graph_input_data(graph_file_path, "./current_flows.txt", "Main Graph", False, want_gen_flows, 100)
+	graph = SkiProgram.load_all_graph_input_data(graph_file_path, flows_file_path, "Main Graph", False, want_gen_flows, 100)
 	
 	#Index Nodes and Edges for next steps
 	index_nodes_name_to_key = SkiProgram.index_nodes_by_name (graph, False)
@@ -244,7 +244,6 @@ try:
 		filter_difficulty = []
 		if want_filter_difficulty:
 			filter_difficulty = ask_for_list("Write the difficulties that you don't want (possible values: N for Black, R for Red, B for Blue)")
-			print (filter_difficulty)
 		
 		#Desired path to go from point A or B (Shortest, Fun, Not overcrowded)
 		list_choices_desired_path = [

@@ -1,10 +1,10 @@
-import SkiProgram
-import LogsService
+import Program_Ski_Libraries.SkiProgram as SkiProgram
+import Program_Ski_Libraries.LogsService as LogsService
+import Program_Ski_Libraries.mockers as mockers
 import json
 import networkx as nx
-import mockers
 
-logger = LogsService.initialise_logs("Test file", "./Logs.txt")
+logger = LogsService.initialise_logs("Test file", "./Input_Or_Generated_Files/Logs.txt")
 logger.info ("Test Program started ...")
 print ("Test Program started ...")
 
@@ -21,7 +21,7 @@ try:
 	
 	
 	#Creating and initialising graph with files data
-	graph = SkiProgram.load_all_graph_input_data('./data_arcs.txt', "./current_flows.txt", "Main Graph", True)
+	graph = SkiProgram.load_all_graph_input_data('./Input_Or_Generated_Files/data_arcs.txt', "./Input_Or_Generated_Files/current_flows.txt", "Main Graph", True)
 	
 	#Index Nodes and Edges for next steps
 	
@@ -45,8 +45,8 @@ try:
 	'''
 	
 	#Executing Dijkstra algorithm
-	source = "arc2000"
-	target = "villaroger"
+	source = 7
+	target = 1
 	
 	#dijkstra with filter
 	res_Dijkstra = SkiProgram.Dijkstra (graph, source, target, "normal_weight", index_nodes_name_to_key, index_edges_2dkey_to_object, [ "N", "R"], False)
@@ -57,8 +57,8 @@ try:
 	print(SkiProgram.shortest_path_result_into_text(res_Dijkstra))
 	
 	#dijkstra with filter and with most interesting path
-	source = 'villaroger'
-	target = '37'
+	source = 1
+	target = 37
 	res_Dijkstra = SkiProgram.Dijkstra (graph, source, target, "most_interesting_path_weight", index_nodes_name_to_key, index_edges_2dkey_to_object, [ ], False)
 	print(SkiProgram.shortest_path_result_into_text(res_Dijkstra))
 	

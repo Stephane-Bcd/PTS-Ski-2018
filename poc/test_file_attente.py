@@ -8,7 +8,8 @@ class Flow(IntEnum):
 	TK = 800
 	BUS = 300
 
-print(Flow.TPH.value)
+#print(Flow.TPH.value)
+print(Flow["TPH"])
 
 '''def get_mean_waiting_time(flow: Flow):
     departure_interval = 1 / flow
