@@ -874,9 +874,12 @@ def Dijkstra (graph, source, target, weight, index_nodes_name_to_key, index_edge
 		index_edges_2dkey_to_object = index_edges_by_2D_key (graph, verbose)
 	
 	#Return JSON variable
+	
 	final_res = {
 		"source": source,
 		"target": target,
+		"source_name": get_node_by_id (graph, source)["node_name"],
+		"target_name": get_node_by_id (graph, target)["node_name"],
 		"execution_mode": "Dijkstra",
 		"used_weight": weight,
 		"execution_time": 0.0,
@@ -966,7 +969,7 @@ def shortest_path_result_into_text (JSON):
 		result_text += "Unknown"
 	
 	result_text += "\n---------------------------------------------------\n\n"
-	result_text += "Instructions to go from \'" + str(JSON["source"]) + "\' to \'" + str(JSON["target"]) + "\'\n\n"
+	result_text += "Instructions to go from \'" + str(JSON["source_name"]) + "\' to \'" + str(JSON["target_name"]) + "\'\n\n"
 	
 	first_Node = True
 	first_Edge = True
