@@ -17,6 +17,7 @@ import json
 import Program_Ski_Libraries.LogsService as LogsService
 import Program_Ski_Libraries.WeightCalculationTools as WeightCalculationTools
 import time
+from random import random as rndm
 import random
 import os
 
@@ -628,15 +629,27 @@ def compute_interesting_path_weight (graph, verbose = False):
 	logger.info("Interesting paths weights computation finished successfully")
 
 
-def compute_coef_for_flows(flow_value, max_flow, normal_weight):
-	return normal_weight * (max_flow/flow_value)
+def get_mean_waiting_time(max_flow):
+	'''
+	===========================================================================
+	FUNCTION THAT COMPUTES A MEAN WAITING TIME (TO ADD FOR RISES TO THE WEIGHT)
+	max_flow: Max flow for an edge (nb of skiers per hour)
+	returns: value of the mean waiting time to ass do the time of travel (weight of an edge)
+	===========================================================================
+	See specifications:
+	https://devinci-my.sharepoint.com/personal/stephane_boucaud_devinci_fr/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fstephane%5Fboucaud%5Fdevinci%5Ffr%2FDocuments%2FPTS%20%2D%20IBO%20Ski%2Fscan%2Epdf&parent=%2Fpersonal%2Fstephane%5Fboucaud%5Fdevinci%5Ffr%2FDocuments%2FPTS%20%2D%20IBO%20Ski
+	'''
+	departure_interval = 1 / max_flow
+	arrival_interval = rndm() * departure_interval
+	queue_length = arrival_interval / departure_interval
+	
+	return queue_length / (departure_interval * (1 - queue_length))
 
 	
 def compute_less_flow_weight (graph, verbose = False):
 	'''
 	===========================================================================
-	FUNCTION THAT COMPUTES A WEIGHT USED TO FAVORISE DESCENDS USING A COEFFICIENT
-	coef: This coefficient is calculated using search_coef_favorise_descents (graph, verbose = False) function
+	FUNCTION THAT COMPUTES A WEIGHT USED TO FAVORISE NOT OVERCROWDED PATHS
 	graph: graph for which this weight has to be calculated
 	verbose: True if you want all informations in the log file
 	===========================================================================
@@ -644,14 +657,33 @@ def compute_less_flow_weight (graph, verbose = False):
 	
 	#initialising logs and Intro Message
 	logger = LogsService.initialise_logs(__name__ + ".compute_interesting_path_weight", logs_file_path)
-	print("Interesting paths weights computation started in " + ("verbose" if verbose else "not verbose") + " mode.")
-	logger.info("Interesting paths weights computation started in " + ("verbose" if verbose else "not verbose") + " mode." )
+	print("Less congested paths weights computation started in " + ("verbose" if verbose else "not verbose") + " mode.")
+	logger.info("Less congested paths weights computation started in " + ("verbose" if verbose else "not verbose") + " mode." )
+	
+	#We will create a new Edge parameter to store a weight that favorises less congested paths by increasing rises normal weights
+	for edge in graph.edges(data=True, keys=True): #keys=True is used to identify parallel edges
+		
+		#JSON object containing all informations calculated before (name, normal weight etc)
+		actual_edge_json = edge[3]
+		actual_edge_id = actual_edge_json["edge_id"]
+		actual_edge_is_descent = actual_edge_json["is_descent"]
+		actual_edge_normal_weight = actual_edge_json["normal_weight"]
+		actual_edge_max_flow = actual_edge_json["max_flow"]
+		
+		if actual_edge_is_descent: #if it is a descent (more interesting so normal weight)
+			actual_edge_less_congested_path_weight = actual_edge_normal_weight
+		else: #if it is a rise (less interesting so bigger weight)
+			actual_edge_less_congested_path_weight = actual_edge_normal_weight + get_mean_waiting_time(actual_edge_max_flow)
+		
+		graph.edges[edge[0], edge[1], edge[2]]['less_congested_path_weight'] = actual_edge_less_congested_path_weight
 	
 	
+	if verbose: print("Edges with less congested paths weights:\n" + json.dumps(list(graph.edges(data=True, keys=True)), indent=4, sort_keys=True))
+	if verbose: logger.info("Edges with less congested paths weights:\n" + json.dumps(list(graph.edges(data=True, keys=True)), indent=4, sort_keys=True))
 	
 	#Ending message
-	print("Interesting paths weights computation finished successfully")
-	logger.info("Interesting paths weights computation finished successfully")
+	print("Less congested paths weights computation finished successfully")
+	logger.info("Less congested paths weights computation finished successfully")
 	
 
 def parse_current_flows(file_path, verbose = False):
@@ -835,6 +867,9 @@ def load_all_graph_input_data(edges_nodes_input_file, actual_flows_input_file, g
 	
 	#Compute interesting paths weights
 	compute_interesting_path_weight (graph, verbose)
+	
+	#Compute less congested paths weights
+	compute_less_flow_weight (graph, verbose)
 	
 	#Ending message
 	print("\'"+graph.graph["name"]+"\' Graph created and filled with input data successfully")

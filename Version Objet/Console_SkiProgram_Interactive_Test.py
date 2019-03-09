@@ -185,7 +185,13 @@ bool_exit = False
 graph_file_path = './Input_Or_Generated_Files/data_arcs.txt'
 flows_file_path = "./Input_Or_Generated_Files/current_flows.txt"
 
+#verbose defines if we want or not to prompt all data on terminal and in logs file
+verbose = False
+
 try:
+	
+	#Ask if we need a verbose mode for this test
+	verbose = ask_yes_no_question("Do you need a verbose mode for this test?")
 	
 	#Ask if want to generate a new graph
 	choices_list = ["1.Use existing graph",
@@ -222,11 +228,11 @@ try:
 		quit()
 	
 	#Creating and initialising graph with files data
-	graph = SkiProgram.load_all_graph_input_data(graph_file_path, flows_file_path, "Main Graph", False, want_gen_flows, 100)
+	graph = SkiProgram.load_all_graph_input_data(graph_file_path, flows_file_path, "Main Graph", verbose, want_gen_flows, 100)
 	
 	#Index Nodes and Edges for next steps
-	index_nodes_name_to_key = SkiProgram.index_nodes_by_name (graph, False)
-	index_edges_2dkey_to_object = SkiProgram.index_edges_by_2D_key (graph, False)
+	index_nodes_name_to_key = SkiProgram.index_nodes_by_name (graph, verbose)
+	index_edges_2dkey_to_object = SkiProgram.index_edges_by_2D_key (graph, verbose)
 	
 	#Start of the interactive program
 	while not bool_exit:
@@ -257,9 +263,10 @@ try:
 		list_corresponding_weights = [
 			"normal_weight",
 			"most_interesting_path_weight",
-			""
+			"less_congested_path_weight"
 		]
 		
+		#Depending on the choice of the user we will use the corresponding weight
 		if choice_desired_path == 1:
 			selected_weight = list_corresponding_weights[0]
 		elif choice_desired_path == 2:
@@ -272,7 +279,7 @@ try:
 		
 		#Executing Dijkstra Algorithm
 		
-		res_Dijkstra = SkiProgram.Dijkstra (graph, _from, _to, selected_weight, index_nodes_name_to_key, index_edges_2dkey_to_object, filter_difficulty, False)
+		res_Dijkstra = SkiProgram.Dijkstra (graph, _from, _to, selected_weight, index_nodes_name_to_key, index_edges_2dkey_to_object, filter_difficulty, verbose)
 		print(SkiProgram.shortest_path_result_into_text(res_Dijkstra))
 		
 		
