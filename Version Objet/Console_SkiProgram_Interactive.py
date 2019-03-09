@@ -14,11 +14,11 @@ import os
 # Displaying header
 logger = LogsService.initialise_logs("Ski Program Interactive (Console): TEST", "./Input_Or_Generated_Files/Logs.txt")
 
-logger.info ("Console interactive test program started ...")
-print ("Console interactive test program started ...")
+logger.info ("Console interactive program started ...")
+print ("Console interactive program started ...")
 
 header_message = "===========================================================================\n"
-header_message += " CONSOLE INTERACTIVE SKI TEST PROGRAM\n"
+header_message += " CONSOLE INTERACTIVE SKI PROGRAM\n"
 header_message += " Copyright 2019 Stephane BOUCAUD, Pierrick PUJOL, Simon GILBERT\n\n"
 header_message += " This is an interactive program. Use your keyboard to select options.\n"
 header_message += "===========================================================================\n\n"
@@ -35,54 +35,17 @@ bool_exit = False
 graph_file_path = './Input_Or_Generated_Files/data_arcs.txt'
 flows_file_path = "./Input_Or_Generated_Files/current_flows.txt"
 
-#verbose defines if we want or not to prompt all data on terminal and in logs file
-verbose = False
-
 try:
-	
-	#Ask if we need a verbose mode for this test
-	verbose = cs.ask_yes_no_question("Do you need a verbose mode for this test?")
-	
-	#Ask if want to generate a new graph
-	choices_list = ["1.Use existing graph",
-		"2. Generate new random graph"
-	]
-	choice_graph = cs.ask_option_from_choice_list(choices_list, "Which kind of graph would you like to use?")
-	
-	#If we want to use existing graph
-	if choice_graph == 1:
-		choices_list_graph_path = ["1.Use default graph file path: "+graph_file_path,
-			"2. Use custom graph file path"
-		]
-		choice_graph = cs.ask_option_from_choice_list(choices_list_graph_path, "Which kind of graph would you like to use?")
-		
-		#If we want to use a custom graph file (type the path)
-		if choice_graph == 2:
-			graph_file_path = cs.ask_for_string("Enter the path to the file containing graph data")
-			
-			
-	#If we want to generate a graph
-	else:
-		graph_file_path = './Input_Or_Generated_Files/data_arcs_generated.txt'
-		_vertex_nb = 50
-		_edges_nb = 200
-		
-		_vertex_nb = cs.ask_for_integer("Enter a number of vertex")
-		_edges_nb = cs.ask_for_integer("Enter a number of edges")
-
-		mockers.write_graph(_vertex_nb,_edges_nb, graph_file_path)
-	
-	want_gen_flows = cs.ask_yes_no_question("Do you want to generate a random Flows file ?")
-	if not want_gen_flows and not os.path.exists(flows_file_path):
+	if not os.path.exists(flows_file_path):
 		print (flows_file_path + " file doesn't exist !")
 		quit()
 	
 	#Creating and initialising graph with files data
-	graph = SkiProgram.load_all_graph_input_data(graph_file_path, flows_file_path, "Main Graph", verbose, want_gen_flows, 100)
+	graph = SkiProgram.load_all_graph_input_data(graph_file_path, flows_file_path, "Main Graph")
 	
 	#Index Nodes and Edges for next steps
-	index_nodes_name_to_key = SkiProgram.index_nodes_by_name (graph, verbose)
-	index_edges_2dkey_to_object = SkiProgram.index_edges_by_2D_key (graph, verbose)
+	index_nodes_name_to_key = SkiProgram.index_nodes_by_name (graph)
+	index_edges_2dkey_to_object = SkiProgram.index_edges_by_2D_key (graph)
 	
 	#Start of the interactive program
 	while not bool_exit:
@@ -133,7 +96,7 @@ try:
 		
 		#Executing Dijkstra Algorithm
 		
-		res_Dijkstra = SkiProgram.Dijkstra (graph, _from, _to, selected_weight, index_nodes_name_to_key, index_edges_2dkey_to_object, filter_difficulty, verbose)
+		res_Dijkstra = SkiProgram.Dijkstra (graph, _from, _to, selected_weight, index_nodes_name_to_key, index_edges_2dkey_to_object, filter_difficulty)
 		print(SkiProgram.shortest_path_result_into_text(res_Dijkstra))
 		
 		
@@ -141,8 +104,8 @@ try:
 		bool_exit = cs.ask_yes_no_question("Exit program?")
 	
 
-	print ("Console interactive test program stopped without problem ! :)")
-	logger.info ("Console interactive test program stopped without problem ! :)")
+	print ("Console interactive program stopped without problem ! :)")
+	logger.info ("Console interactive program stopped without problem ! :)")
 	
 except Exception as e:
 	print(e)
