@@ -16,17 +16,13 @@
 
 import networkx as nx
 import json
-import Program_Ski_Libraries.LogsService as LogsService
-import Program_Ski_Libraries.WeightCalculationTools as WeightCalculationTools
+from Program_Ski_Libraries import LogsService as LogsService
+from Program_Ski_Libraries import WeightCalculationTools as WeightCalculationTools
 import time
 from random import random as rndm
 import random
 import os
 import sys
-
-#Adding directory and modules in pythonpath variable
-dir_path = os.path.dirname(os.path.realpath(__file__))
-sys.path.insert(0, dir_path)
 
 
 '''

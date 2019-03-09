@@ -1,7 +1,7 @@
-import Program_Ski_Libraries.SkiProgram as SkiProgram
-import Program_Ski_Libraries.LogsService as LogsService
-import Program_Ski_Libraries.mockers as mockers
-import Program_Ski_Libraries.ConsoleService as cs
+from Program_Ski_Libraries import SkiProgram as SkiProgram
+from Program_Ski_Libraries import LogsService as LogsService
+from Program_Ski_Libraries import mockers as mockers
+from Program_Ski_Libraries import ConsoleService as cs
 import json
 import networkx as nx
 import os
