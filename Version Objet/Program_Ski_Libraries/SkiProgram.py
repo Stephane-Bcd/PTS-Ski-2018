@@ -12,6 +12,8 @@
 	FreeBSD licence
 '''
 
+
+
 import networkx as nx
 import json
 import Program_Ski_Libraries.LogsService as LogsService
@@ -20,6 +22,11 @@ import time
 from random import random as rndm
 import random
 import os
+import sys
+
+#Adding directory and modules in pythonpath variable
+dir_path = os.path.dirname(os.path.realpath(__file__))
+sys.path.insert(0, dir_path)
 
 
 '''
