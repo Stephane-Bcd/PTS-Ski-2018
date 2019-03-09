@@ -1,10 +1,7 @@
-from importlib.machinery import SourceFileLoader
-
-SkiProgram = SourceFileLoader("SkiProgram", "./Program_Ski_Libraries/SkiProgram.py").load_module()
-LogsService = SourceFileLoader("LogsService", "./Program_Ski_Libraries/LogsService.py").load_module()
-mockers = SourceFileLoader("mockers", "./Program_Ski_Libraries/mockers.py").load_module()
-cs = SourceFileLoader("cs", "./Program_Ski_Libraries/ConsoleService.py").load_module()
-
+import .Program_Ski_Libraries.SkiProgram as SkiProgram
+import .Program_Ski_Libraries.LogsService as LogsService
+import .Program_Ski_Libraries.mockers as mockers
+import .Program_Ski_Libraries.ConsoleService as cs
 import json
 import networkx as nx
 import os
