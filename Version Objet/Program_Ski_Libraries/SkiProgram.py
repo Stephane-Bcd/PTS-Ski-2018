@@ -12,10 +12,13 @@
 	FreeBSD licence
 '''
 
+from importlib.machinery import SourceFileLoader
+
+LogsService = SourceFileLoader("LogsService", "./Program_Ski_Libraries/LogsService.py").load_module()
+WeightCalculationTools = SourceFileLoader("WeightCalculationTools", "./Program_Ski_Libraries/WeightCalculationTools.py").load_module()
+
 import networkx as nx
 import json
-import Program_Ski_Libraries.LogsService as LogsService
-import Program_Ski_Libraries.WeightCalculationTools as WeightCalculationTools
 import time
 from random import random as rndm
 import random

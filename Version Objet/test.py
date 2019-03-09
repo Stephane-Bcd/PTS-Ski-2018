@@ -1,6 +1,9 @@
-import Program_Ski_Libraries.SkiProgram as SkiProgram
-import Program_Ski_Libraries.LogsService as LogsService
-import Program_Ski_Libraries.mockers as mockers
+from importlib.machinery import SourceFileLoader
+
+SkiProgram = SourceFileLoader("SkiProgram", "./Program_Ski_Libraries/SkiProgram.py").load_module()
+LogsService = SourceFileLoader("LogsService", "./Program_Ski_Libraries/LogsService.py").load_module()
+mockers = SourceFileLoader("mockers", "./Program_Ski_Libraries/mockers.py").load_module()
+
 import json
 import networkx as nx
 
@@ -44,7 +47,7 @@ try:
 	print("Get edge by 2d id ([2-1]) result:\n"+str(SkiProgram.get_edges_by_2D_id (graph, index_edges_2dkey_to_object, [2,1])))
 	'''
 	
-	#Executing Dijkstra algorithm
+	'''#Executing Dijkstra algorithm
 	source = 7
 	target = 1
 	
@@ -60,23 +63,10 @@ try:
 	source = 1
 	target = 37
 	res_Dijkstra = SkiProgram.Dijkstra (graph, source, target, "most_interesting_path_weight", index_nodes_name_to_key, index_edges_2dkey_to_object, [ ], False)
-	print(SkiProgram.shortest_path_result_into_text(res_Dijkstra))
+	print(SkiProgram.shortest_path_result_into_text(res_Dijkstra))'''
 	
 	
 	
-	'''
-	#create a path graph
-	g = nx.path_graph(100,nx.MultiDiGraph(name = "test"))
-	print (g.edges(data=True))
-	'''
-	
-	'''
-	#Create a subgraph with filtered edges
-	graph_dificulty_1 = SkiProgram.get_filtered_graph_on_edge_type(graph, ["N", "R"])
-	graph_dificulty_2 = SkiProgram.get_filtered_graph_on_edge_type(graph, ["N"])
-	graph_dificulty_3 = graph
-	SkiProgram.display_graph_console(graph_dificulty_1)
-	'''
 	
 	
 
