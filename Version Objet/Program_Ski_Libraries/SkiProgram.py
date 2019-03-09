@@ -14,8 +14,8 @@
 
 import networkx as nx
 import json
-import .Program_Ski_Libraries.LogsService as LogsService
-import .Program_Ski_Libraries.WeightCalculationTools as WeightCalculationTools
+import Program_Ski_Libraries.LogsService as LogsService
+import Program_Ski_Libraries.WeightCalculationTools as WeightCalculationTools
 import time
 from random import random as rndm
 import random
