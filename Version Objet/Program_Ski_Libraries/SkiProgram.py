@@ -586,7 +586,7 @@ def search_coef_favorise_descents (graph, verbose = False):
 	return multiplicator_interesting_shortest_path
 	
 	
-def compute_interesting_path_weight (graph, verbose = False):
+def compute_interesting_path_weight (graph, coef, verbose = False):
 	'''
 	===========================================================================
 	FUNCTION THAT COMPUTES A WEIGHT USED TO FAVORISE DESCENDS USING A COEFFICIENT
@@ -601,8 +601,7 @@ def compute_interesting_path_weight (graph, verbose = False):
 	print("Interesting paths weights computation started in " + ("verbose" if verbose else "not verbose") + " mode.")
 	logger.info("Interesting paths weights computation started in " + ("verbose" if verbose else "not verbose") + " mode." )
 	
-	#search for needed coefficient
-	coef = search_coef_favorise_descents (graph, verbose = False)
+	
 	
 	#We will create a new Edge parameter to store a weight that favorises descents to rises by increasing rises normal weights
 	for edge in graph.edges(data=True, keys=True): #keys=True is used to identify parallel edges
@@ -656,7 +655,7 @@ def compute_less_flow_weight (graph, verbose = False):
 	'''
 	
 	#initialising logs and Intro Message
-	logger = LogsService.initialise_logs(__name__ + ".compute_interesting_path_weight", logs_file_path)
+	logger = LogsService.initialise_logs(__name__ + ".compute_less_flow_weight", logs_file_path)
 	print("Less congested paths weights computation started in " + ("verbose" if verbose else "not verbose") + " mode.")
 	logger.info("Less congested paths weights computation started in " + ("verbose" if verbose else "not verbose") + " mode." )
 	
@@ -684,6 +683,49 @@ def compute_less_flow_weight (graph, verbose = False):
 	#Ending message
 	print("Less congested paths weights computation finished successfully")
 	logger.info("Less congested paths weights computation finished successfully")
+	
+	
+def compute_less_flow_and_interesting_path_weight(graph, coef, verbose = False):
+	'''
+	===========================================================================
+	FUNCTION THAT COMPUTES A WEIGHT USED TO FAVORISE DESCENDS AND LESS OVERLOADED PATHS COEFFICIENTS
+	coef: This coefficient is calculated using search_coef_favorise_descents (graph, verbose = False) function
+	graph: graph for which this weight has to be calculated
+	verbose: True if you want all informations in the log file
+	===========================================================================
+	'''
+	
+	#initialising logs and Intro Message
+	logger = LogsService.initialise_logs(__name__ + ".compute_less_flow_and_interesting_path_weight", logs_file_path)
+	print("Interesting and less congested paths weights computation started in " + ("verbose" if verbose else "not verbose") + " mode.")
+	logger.info("Interesting and less congested paths weights computation started in " + ("verbose" if verbose else "not verbose") + " mode." )
+	
+	
+	
+	#We will create a new Edge parameter to store a weight that favorises descents to rises and less congested paths by increasing rises normal weights
+	for edge in graph.edges(data=True, keys=True): #keys=True is used to identify parallel edges
+		
+		#JSON object containing all informations calculated before (name, normal weight etc)
+		actual_edge_json = edge[3]
+		actual_edge_id = actual_edge_json["edge_id"]
+		actual_edge_is_descent = actual_edge_json["is_descent"]
+		actual_edge_normal_weight = actual_edge_json["normal_weight"]
+		actual_edge_max_flow = actual_edge_json["max_flow"]
+		
+		if actual_edge_is_descent: #if it is a descent (more interesting so normal weight)
+			actual_edge_most_interesting_and_less_congested_path_weight = actual_edge_normal_weight
+		else: #if it is a rise (less interesting so bigger weight)
+			actual_edge_most_interesting_and_less_congested_path_weight = (actual_edge_normal_weight + get_mean_waiting_time(actual_edge_max_flow)) * coef
+		
+		graph.edges[edge[0], edge[1], edge[2]]['most_interesting_and_less_congested_path_weight'] = actual_edge_most_interesting_and_less_congested_path_weight
+	
+	
+	if verbose: print("Edges with interesting and less congested paths weights:\n" + json.dumps(list(graph.edges(data=True, keys=True)), indent=4, sort_keys=True))
+	if verbose: logger.info("Edges with interesting and less congested paths weights:\n" + json.dumps(list(graph.edges(data=True, keys=True)), indent=4, sort_keys=True))
+	
+	#Ending message
+	print("Interesting and less congested paths weights computation finished successfully")
+	logger.info("Interesting and less congested paths weights computation finished successfully")
 	
 
 def parse_current_flows(file_path, verbose = False):
@@ -865,11 +907,17 @@ def load_all_graph_input_data(edges_nodes_input_file, actual_flows_input_file, g
 	#Compute graph weights
 	compute_normal_weight (graph, verbose)
 	
+	#Compute coefficient for interesting paths
+	coef = search_coef_favorise_descents (graph, verbose)
+	
 	#Compute interesting paths weights
-	compute_interesting_path_weight (graph, verbose)
+	compute_interesting_path_weight (graph, coef, verbose)
 	
 	#Compute less congested paths weights
 	compute_less_flow_weight (graph, verbose)
+	
+	#Compute interesting and less congested paths weights
+	compute_less_flow_and_interesting_path_weight(graph, coef, verbose)
 	
 	#Ending message
 	print("\'"+graph.graph["name"]+"\' Graph created and filled with input data successfully")

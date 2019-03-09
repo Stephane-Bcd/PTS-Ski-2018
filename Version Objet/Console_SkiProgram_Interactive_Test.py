@@ -95,12 +95,12 @@ def ask_option_from_choice_list(list_choices, question):
 	iteration = 0
 	
 	while iteration+2 < len(list_choices):
-		line_new = '%40s  %40s  %40s' % (list_choices[iteration], list_choices[iteration+1], list_choices[iteration+2])
+		line_new = '%50s  %50s  %50s' % (list_choices[iteration], list_choices[iteration+1], list_choices[iteration+2])
 		print (line_new)
 		iteration += 3
 	if len(list_choices) % 3 != 0:
 		difference = len(list_choices) - iteration
-		line_new = '%40s  %40s  %40s' % (  
+		line_new = '%50s  %50s  %50s' % (  
 			list_choices[iteration] if difference >= 1 else '', 
 			list_choices[iteration+1] if difference >= 2 else '', 
 			''
@@ -255,7 +255,8 @@ try:
 		list_choices_desired_path = [
 			"1. Shortest path (fast and furious!)",
 			"2. Favorising descents (more fun!)",
-			"3. Favorising less congested path (less waiting!)"
+			"3. Favorising less congested path (less waiting!)",
+			"4. Favorising less congested path and favorising descents"
 		]
 		
 		choice_desired_path = ask_option_from_choice_list(list_choices_desired_path, "What kind of path would you prefer to go through?")
@@ -263,7 +264,8 @@ try:
 		list_corresponding_weights = [
 			"normal_weight",
 			"most_interesting_path_weight",
-			"less_congested_path_weight"
+			"less_congested_path_weight",
+			"most_interesting_and_less_congested_path_weight"
 		]
 		
 		#Depending on the choice of the user we will use the corresponding weight
@@ -273,6 +275,8 @@ try:
 			selected_weight = list_corresponding_weights[1]
 		elif choice_desired_path == 3:
 			selected_weight = list_corresponding_weights[2]
+		elif choice_desired_path == 4:
+			selected_weight = list_corresponding_weights[3]
 		else:
 			selected_weight = list_corresponding_weights[0]
 		
