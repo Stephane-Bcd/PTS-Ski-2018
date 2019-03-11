@@ -1,0 +1,24 @@
+{% if envoi %} Recovery of values:                                  <br /> <br />
+
+Your starting point is: {{ starting_point }}                        <br />
+Your point of arrival is: {{ arrival_point }}                       <br />
+Your kind of path is: {{ kind_path }}                               <br />
+Your filtered difficulties: {{filter_difficulty}}                   <br />
+{{ Dijkstra_text_result }}                                          <br />
+
+
+{% endif %}
+
+
+<p>
+ ===========================================================================    <br />
+ DJANGO SKI TEST PROGRAM                                                        <br />
+ Copyright 2019, Pierrick PUJOL, Stephane BOUCAUD, Simon GILBERT  <br />
+ ===========================================================================    <br />
+</p>
+
+<form action="{% url "graph_calculation" %}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit" />
+</form>

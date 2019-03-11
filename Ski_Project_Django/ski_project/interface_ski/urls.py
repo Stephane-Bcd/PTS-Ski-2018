@@ -2,7 +2,5 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('date', views.date_actuelle),
-    path('addition/<int:nombre1>/<int:nombre2>/', views.addition),
-	path('graph/', views.graph, name='graph')
+	path('graph_calculation/', views.graph, name='graph_calculation')
 ]
