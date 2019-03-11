@@ -15,6 +15,7 @@
 
 
 import networkx as nx
+from networkx.algorithms.flow import edmonds_karp
 import json
 from Program_Ski_Libraries import LogsService as LogsService
 from Program_Ski_Libraries import WeightCalculationTools as WeightCalculationTools
@@ -1130,34 +1131,40 @@ def shortest_path_result_into_text (JSON):
 	return result_text
 
 
-def Max_Flow (graph, source, target, weight, index_nodes_name_to_key, index_edges_2dkey_to_object, filter_edges, verbose = False):
+def Max_Flow (graph, source, target, index_nodes_name_to_key, index_edges_2dkey_to_object, verbose = False):
 	'''
 		FUNCTION TO CALCULATE MAXIMUM FLOW 
-		graph: graph on which the algorithm has to be executed
+		graph: graph on which the algorithm has to be executed (IT CAN'T BE THE MULTIDIGRAPH! USE transform_multidigraph_to_digraph to transform your graph !)
 		source, target: source and target nodes
-		weight: string that defines which weight has to be used to calculate maximum flow
 		index_nodes_name_to_key: index containing Name(Node) => Id(Node)
 		index_edges_2dkey_to_object: index containing 2D Id(Edge) => 3D ids(Edge)
-		filter_edges: filter on edges (a list such as ["N", "R"], let [] if none
 		verbose: True if you want to print everything
 	'''
 	
-	start = time.time()
+	if graph.graph["type"] == "multidirected":
+		print("this functionnality doesn't work with multidirected graph.\nPlease transform it into directed first.")
+		quit()
+	else:
 	
-	#initialising logs and Intro Message
-	logger = LogsService.initialise_logs(__name__ + ".Max_Flow", logs_file_path)
-	print('Ford Fulkerson algorithm started in ' + ("verbose" if verbose else "not verbose") + " mode.")
-	logger.info('Ford Fulkerson algorithm started in ' + ("verbose" if verbose else "not verbose") + " mode." )
+		start = time.time()
 	
-	
-	
-	
-	
-	
-	#End message
-	end = time.time()
-	print("Execution time: " + str(end - start))
-	logger.info("Execution time: " + str(end - start))
+		#initialising logs and Intro Message
+		logger = LogsService.initialise_logs(__name__ + ".Max_Flow", logs_file_path)
+		print('Edmond Karps algorithm started in ' + ("verbose" if verbose else "not verbose") + " mode.")
+		logger.info('Edmond Karps algorithm started in ' + ("verbose" if verbose else "not verbose") + " mode." )
+		
+		
+		R = edmonds_karp(graph, source, target, 'max_flow')
+		# print(R)
+		flow_value = nx.maximum_flow_value(graph, source, target, "max_flow")
+		print(flow_value)
+		print(R)
+		
+		
+		#End message
+		end = time.time()
+		print("Execution time: " + str(end - start))
+		logger.info("Execution time: " + str(end - start))
 	
 	
 	

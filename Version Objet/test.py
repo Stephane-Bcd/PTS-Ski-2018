@@ -58,11 +58,11 @@ target = 37
 res_Dijkstra = SkiProgram.Dijkstra (graph, source, target, "most_interesting_path_weight", index_nodes_name_to_key, index_edges_2dkey_to_object, [ ], False)
 print(SkiProgram.shortest_path_result_into_text(res_Dijkstra))'''
 
-#Ford Fulkerson
+#Edmond Karps
 source = 7
 target = 1
-SkiProgram.transform_multidigraph_to_digraph(graph, index_edges_2dkey_to_object, True)
-
+flows_graph = SkiProgram.transform_multidigraph_to_digraph(graph, index_edges_2dkey_to_object, True)
+SkiProgram.Max_Flow (flows_graph, source, target, index_nodes_name_to_key, index_edges_2dkey_to_object, True)
 
 
 
