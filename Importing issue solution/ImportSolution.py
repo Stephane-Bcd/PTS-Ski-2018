@@ -1,3 +1,8 @@
+'''
+	THIS IS A SOLUTION FOR IMPORTING ISSUES
+	You can test imports using this 
+'''
+
 import os
 import sys
 
@@ -9,7 +14,11 @@ def get_absolute_path_of_current_project(root_folder_name = "PTS-Ski-2018"):
 	'''
 	actual_path = os.path.abspath(__file__)
 	substr_index = actual_path.rfind(root_folder_name)
-	return actual_path[:substr_index+len(root_folder_name)]
+	if substr_index != -1:
+		return actual_path[:substr_index+len(root_folder_name)]
+	else:
+		print (root_folder_name + " root project folder not found !\nCheck the name of the root folders name")
+		quit()
 	
 def get_recursive_directories_paths(main_directory, folder_names_ignored):
 	'''
