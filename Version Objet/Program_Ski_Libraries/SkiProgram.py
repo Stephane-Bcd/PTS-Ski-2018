@@ -215,7 +215,9 @@ def create_new_graph(graph_type, graph_name = "graph", verbose = False):
 	graph = None
 	
 	if graph_type == "multidirected":
-		graph = nx.MultiDiGraph(name = graph_name)
+		graph = nx.MultiDiGraph(name = graph_name, type = graph_type)
+	elif graph_type == "directed":
+		graph = nx.DiGraph(name = graph_name, type = graph_type)
 	else:
 		#Error message
 		print("Graph creation error: graph type not supported")
@@ -861,13 +863,65 @@ def display_graph_console(graph):
 	print("NODES:\n" + json.dumps(list(graph.nodes(data=True)), indent=4, sort_keys=True))
 	logger.info("NODES:\n" + json.dumps(list(graph.nodes(data=True)), indent=4, sort_keys=True))
 	
-	print("EDGES:\n" + json.dumps(list(graph.edges(data=True, keys=True)), indent=4, sort_keys=True))
-	logger.info("EDGES:\n" + json.dumps(list(graph.edges(data=True, keys=True)), indent=4, sort_keys=True))
+	if graph.graph["type"] == "multidirected":
+		print("EDGES:\n" + json.dumps(list(graph.edges(data=True, keys=True)), indent=4, sort_keys=True))
+		logger.info("EDGES:\n" + json.dumps(list(graph.edges(data=True, keys=True)), indent=4, sort_keys=True))
+	else:
+		print("EDGES:\n" + json.dumps(list(graph.edges(data=True)), indent=4, sort_keys=True))
+		logger.info("EDGES:\n" + json.dumps(list(graph.edges(data=True)), indent=4, sort_keys=True))
+		
 	
 	#Ending message
 	print("\'"+graph.graph["name"]+"\' Graph display in console finished successfully")
 	logger.info("\'"+graph.graph["name"]+"\' Graph display in console finished successfully")
 	
+	
+def transform_multidigraph_to_digraph(graph, index_edges_2dkey_to_object, verbose = False):
+	'''
+		FUNCTION TO CREATE A NEW DIRECTED GRAPH USING A MULTI DIRECTED GRAPH 
+		AND WITH MAX FLOWS FUSION (ADDITION); THIS NEW GRAPH WILL BE USED TO CALCULATE MAX FLOW
+		graph: MultiDiGraph to be transformed
+		returns a new DiGraph that can be used to calculate max flow
+	'''
+	
+	#initialising logs and Intro Message
+	logger = LogsService.initialise_logs(__name__ + ".transform_multidigraph_to_digraph", logs_file_path)
+	print("Graph for max flow creation started in " + ("verbose" if verbose else "not verbose") + " mode.")
+	logger.info("Graph for max flow creation started in " + ("verbose" if verbose else "not verbose") + " mode." )
+	
+	#creating a new graph
+	max_flows_graph = create_new_graph("directed", "Graph for Flows", verbose)
+	
+	#filling the new graph with nodes
+	for node in graph.nodes(data=True):
+		max_flows_graph.add_node(int(node[1]["node_id"]),
+			object_type = "node",
+			node_id = node[1]["node_id"],
+			node_name = node[1]["node_name"]
+		)
+	
+	for _2d_id, _3d_ids in index_edges_2dkey_to_object.items():
+		cumulated_max_flow = 0
+		for _3d_id in _3d_ids:
+			actual_edge = get_edge_by_3D_id (graph, _3d_id)
+			cumulated_max_flow += actual_edge["max_flow"]
+		
+		max_flows_graph.add_edge(actual_edge["node1_id"], actual_edge["node2_id"],
+			object_type = "edge",
+			node1_id = actual_edge["node1_id"],
+			node2_id = actual_edge["node2_id"],
+			max_flow = cumulated_max_flow
+		)
+		
+	if verbose:
+		display_graph_console(max_flows_graph)
+	
+	#Ending message
+	print("Graph for max flow creation finished successfully")
+	logger.info("Graph for max flow creation finished successfully")
+	
+	return max_flows_graph
+
 
 def load_all_graph_input_data(edges_nodes_input_file, actual_flows_input_file, graph_name, verbose = False, generate_current_flows = False, seed = 100):
 	'''
@@ -1074,3 +1128,48 @@ def shortest_path_result_into_text (JSON):
 	result_text += "Total travel duration: " + str(JSON["path_time"]) + " seconds ! Enjoy !\n"
 	
 	return result_text
+
+
+def Max_Flow (graph, source, target, weight, index_nodes_name_to_key, index_edges_2dkey_to_object, filter_edges, verbose = False):
+	'''
+		FUNCTION TO CALCULATE MAXIMUM FLOW 
+		graph: graph on which the algorithm has to be executed
+		source, target: source and target nodes
+		weight: string that defines which weight has to be used to calculate maximum flow
+		index_nodes_name_to_key: index containing Name(Node) => Id(Node)
+		index_edges_2dkey_to_object: index containing 2D Id(Edge) => 3D ids(Edge)
+		filter_edges: filter on edges (a list such as ["N", "R"], let [] if none
+		verbose: True if you want to print everything
+	'''
+	
+	start = time.time()
+	
+	#initialising logs and Intro Message
+	logger = LogsService.initialise_logs(__name__ + ".Max_Flow", logs_file_path)
+	print('Ford Fulkerson algorithm started in ' + ("verbose" if verbose else "not verbose") + " mode.")
+	logger.info('Ford Fulkerson algorithm started in ' + ("verbose" if verbose else "not verbose") + " mode." )
+	
+	
+	
+	
+	
+	
+	#End message
+	end = time.time()
+	print("Execution time: " + str(end - start))
+	logger.info("Execution time: " + str(end - start))
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
