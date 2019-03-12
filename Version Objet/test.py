@@ -19,6 +19,7 @@ print ("Test Program started ...")
 #Creating and initialising graph with files data
 graph = SkiProgram.load_all_graph_input_data('./Input_Or_Generated_Files/data_arcs.txt', "./Input_Or_Generated_Files/current_flows.txt", "Main Graph", False)
 
+
 #Index Nodes and Edges for next steps
 
 index_nodes_name_to_key = SkiProgram.index_nodes_by_name (graph, False)
@@ -26,6 +27,53 @@ index_edges_2dkey_to_object = SkiProgram.index_edges_by_2D_key (graph, False)
 
 #Displaying final graph
 #SkiProgram.display_graph_console(graph)
+
+
+
+#S/T
+source = 7
+target = 1
+
+#User choices
+filter = True
+needs_max_flows = True
+needs_shortest_path = True
+filter_list = [ "N", "R"]
+
+#filter (if needed)
+if filter:
+	filtered_graph = SkiProgram.get_filtered_graph_on_edge_type(graph,filter_list , False)
+
+	#Index Nodes and Edges for next steps
+	filtered_index_nodes_name_to_key = SkiProgram.index_nodes_by_name (filtered_graph, False)
+	filtered_index_edges_2dkey_to_object = SkiProgram.index_edges_by_2D_key (filtered_graph, False)
+
+	used_index_nodes_name_to_key = filtered_index_nodes_name_to_key
+	used_index_edges_2dkey_to_object = filtered_index_edges_2dkey_to_object
+	used_graph = filtered_graph
+else:
+	used_index_nodes_name_to_key = index_nodes_name_to_key
+	used_index_edges_2dkey_to_object = index_edges_2dkey_to_object
+	used_graph = graph
+
+#if want to execute a shortest path algorithm
+if needs_shortest_path:
+	res_Dijkstra = SkiProgram.Dijkstra (used_graph, source, target, "normal_weight", used_index_nodes_name_to_key, used_index_edges_2dkey_to_object, False)
+
+
+#if want to execute a max flow algorithm
+if needs_max_flows:
+	flows_graph = SkiProgram.transform_multidigraph_to_digraph(used_graph, used_index_edges_2dkey_to_object, False)
+	result_Max_Flow = SkiProgram.Max_Flow (flows_graph, source, target, used_index_nodes_name_to_key, used_index_edges_2dkey_to_object, False)
+
+
+
+
+
+
+print ("Test Program stopped without problem ! :)")
+logger.info ("Test Program stopped without problem ! :)")
+
 
 '''
 #Test Get data
@@ -57,20 +105,6 @@ source = 1
 target = 37
 res_Dijkstra = SkiProgram.Dijkstra (graph, source, target, "most_interesting_path_weight", index_nodes_name_to_key, index_edges_2dkey_to_object, [ ], False)
 print(SkiProgram.shortest_path_result_into_text(res_Dijkstra))'''
-
-#Edmond Karps
-source = 7
-target = 1
-flows_graph = SkiProgram.transform_multidigraph_to_digraph(graph, index_edges_2dkey_to_object, True)
-SkiProgram.Max_Flow (flows_graph, source, target, index_nodes_name_to_key, index_edges_2dkey_to_object, True)
-
-
-
-print ("Test Program stopped without problem ! :)")
-logger.info ("Test Program stopped without problem ! :)")
-
-
-
 
 
 	

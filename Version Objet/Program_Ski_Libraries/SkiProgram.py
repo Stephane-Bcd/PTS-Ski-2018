@@ -277,20 +277,28 @@ def get_filtered_graph_on_edge_type(graph, filter_list, verbose = False):
 	print("Edges filtering started in " + ("verbose" if verbose else "not verbose") + " mode.")
 	logger.info("Edges filtering started in " + ("verbose" if verbose else "not verbose") + " mode." )
 	
-	edges = graph.edges(data=True, keys=True)
-	filtered_edges = []
+	#test if there is any filter
+	is_filtered = len(filter_list) > 0
 	
-	for edge in edges:
-		if edge[3]["edge_type"] not in filter_list:
-			filtered_edges.append((edge[0], edge[1], edge[2]))
+	#if there are filters, we create a filtered graph
+	if is_filtered:
+	
+		edges = graph.edges(data=True, keys=True)
+		filtered_edges = []
+		
+		for edge in edges:
+			if edge[3]["edge_type"] not in filter_list:
+				filtered_edges.append((edge[0], edge[1], edge[2]))
 	
 		
 	#Ending message
 	print("Edges filtering finished successfully")
 	logger.info("Edges filtering finished successfully")
 	
-	
-	return graph.edge_subgraph(filtered_edges)
+	if is_filtered:
+		return graph.edge_subgraph(filtered_edges)
+	else:
+		return graph
 
 
 def insert_nodes_and_edges(graph, nodes, edges, verbose = False):
@@ -902,15 +910,25 @@ def transform_multidigraph_to_digraph(graph, index_edges_2dkey_to_object, verbos
 		)
 	
 	for _2d_id, _3d_ids in index_edges_2dkey_to_object.items():
+	
 		cumulated_max_flow = 0
+		cumulated_edge_id = []
+		cumulated_edge_name = []
+		cumulated_edge_type = []
+		
 		for _3d_id in _3d_ids:
 			actual_edge = get_edge_by_3D_id (graph, _3d_id)
 			cumulated_max_flow += actual_edge["max_flow"]
+			cumulated_edge_id.append(actual_edge["edge_id"])
+			cumulated_edge_name.append(actual_edge["edge_name"])
+			cumulated_edge_type.append(actual_edge["edge_type"])
 		
 		max_flows_graph.add_edge(actual_edge["node1_id"], actual_edge["node2_id"],
-			object_type = "edge",
 			node1_id = actual_edge["node1_id"],
 			node2_id = actual_edge["node2_id"],
+			edge_id = cumulated_edge_id, 
+			edge_name = cumulated_edge_name, 
+			edge_type = cumulated_edge_type, 
 			max_flow = cumulated_max_flow
 		)
 		
@@ -984,7 +1002,7 @@ def load_all_graph_input_data(edges_nodes_input_file, actual_flows_input_file, g
 	return graph
 
 
-def Dijkstra (graph, source, target, weight, index_nodes_name_to_key, index_edges_2dkey_to_object, filter_edges, verbose = False):
+def Dijkstra (graph, source, target, weight, index_nodes_name_to_key, index_edges_2dkey_to_object, verbose = False):
 	'''
 	===========================================================================
 	FUNCTION TO EXECUTE DIJKSTRA ALGORITHM FOR SHORTEST PATH
@@ -993,7 +1011,6 @@ def Dijkstra (graph, source, target, weight, index_nodes_name_to_key, index_edge
 	weight: string that defines which weight has to be used to calculate shortest path
 	index_nodes_name_to_key: index containing Name(Node) => Id(Node)
 	index_edges_2dkey_to_object: index containing 2D Id(Edge) => 3D ids(Edge)
-	filter_edges: filter on edges (a list such as ["N", "R"], let [] if none
 	verbose: True if you want to print everything
 	===========================================================================
 	'''
@@ -1004,15 +1021,6 @@ def Dijkstra (graph, source, target, weight, index_nodes_name_to_key, index_edge
 	logger = LogsService.initialise_logs(__name__ + ".Dijkstra", logs_file_path)
 	print('Dijkstra algorithm started in ' + ("verbose" if verbose else "not verbose") + " mode.")
 	logger.info('Dijkstra algorithm started in ' + ("verbose" if verbose else "not verbose") + " mode." )
-	
-	#test if there is any filter
-	is_filtered = len(filter_edges) > 0
-	
-	#if there are filters, we create a filtered graph
-	if is_filtered:
-		graph = get_filtered_graph_on_edge_type(graph, filter_edges, verbose)
-		index_nodes_name_to_key = index_nodes_by_name (graph, verbose)
-		index_edges_2dkey_to_object = index_edges_by_2D_key (graph, verbose)
 	
 	#Return JSON variable
 	
@@ -1027,8 +1035,7 @@ def Dijkstra (graph, source, target, weight, index_nodes_name_to_key, index_edge
 		"nodes": [],
 		"edges": [],
 		"mixed": [],
-		"path_time": 0.0,
-		"filter_on": filter_edges
+		"path_time": 0.0
 	}
 	
 	#Checking if source and target are Names or Ids
@@ -1080,7 +1087,7 @@ def Dijkstra (graph, source, target, weight, index_nodes_name_to_key, index_edge
 	return final_res
 
 
-def shortest_path_result_into_text (JSON):
+def shortest_path_result_into_text (JSON, filter_list):
 	'''
 	===========================================================================
 	FUNCTION TO CONVERT A JSON RESULT FROM SHORTEST PATH ALGO INTO TEXT
@@ -1093,9 +1100,9 @@ def shortest_path_result_into_text (JSON):
 	
 	result_text += "\n---------------------------------------------------\n"
 	result_text += "Execution mode: "+JSON["execution_mode"]+" , Execution time: "+str(JSON["execution_time"])
-	if len(JSON["filter_on"]) > 0:
+	if len(filter_list) > 0:
 		result_text +="\nFilter on:"
-		for filtr in JSON["filter_on"]:
+		for filtr in filter_list:
 			result_text += " \'" + filtr + "\'"
 	else:
 		result_text +="\nNo filter"
@@ -1153,21 +1160,57 @@ def Max_Flow (graph, source, target, index_nodes_name_to_key, index_edges_2dkey_
 		print('Edmond Karps algorithm started in ' + ("verbose" if verbose else "not verbose") + " mode.")
 		logger.info('Edmond Karps algorithm started in ' + ("verbose" if verbose else "not verbose") + " mode." )
 		
-		
+		#Edmonds Karp algorithm
 		R = edmonds_karp(graph, source, target, 'max_flow')
-		# print(R)
 		flow_value = nx.maximum_flow_value(graph, source, target, "max_flow")
-		print(flow_value)
-		print(R)
+		
+		final_res = {
+			"execution_time": 0.0,
+			"source": source,
+			"target": target,
+			"source_name": get_node_by_id (graph, source)["node_name"],
+			"target_name": get_node_by_id (graph, target)["node_name"],
+			"execution_mode": "Edmond Karps",
+			"used_weight": 'max_flow',
+			"max_flow": flow_value,
+			"residual_graph_edges": list(R.edges(data=True))
+		}
 		
 		
 		#End message
 		end = time.time()
 		print("Execution time: " + str(end - start))
 		logger.info("Execution time: " + str(end - start))
+		
+		#Setting execution time in final result
+		final_res["execution_time"] = str(end - start)
 	
+		return final_res
+
+
+def join_shortest_path_and_max_flow_results(graph, graph_for_flows, shortest_path_result, max_flows_result):
+	'''
+		FUNCTION TO JOIN MAX FLOWS AND SHORTEST PATHS RESULTS
+		graph: Multi directed graph used to calculate shortest path
+		graph_for_flows: Directed graph used to calculate maximum flows
+		shortest_path_result: JSON containing the result of a shortest path function
+		max_flows_result: JSON containing the result of a max flows function
+		returns a new JSON mixing the informations of both results
+	'''
 	
+	#initialising logs and Intro Message
+	logger = LogsService.initialise_logs(__name__ + ".Max_Flow", logs_file_path)
+	print("Join of shortest path and max flows results started.")
+	logger.info("Join of shortest path and max flows results started mode." )
 	
+	final_res = {
+		"source": shortest_path_result["source"],
+		"target": shortest_path_result["target"],
+		"source_name": shortest_path_result["source_name"],
+		"target_name": shortest_path_result["target_name"],
+		"execution_mode": shortest_path_result["execution_mode"] + ", " + max_flows_result["execution_mode"],
+		
+	}
 	
 	
 	
