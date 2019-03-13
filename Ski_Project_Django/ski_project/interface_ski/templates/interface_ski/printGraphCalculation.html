@@ -1,9 +1,11 @@
-{% if envoi %} Recovery of values:                                  <br /> <br />
+{% if sent %} Recovery of values:                                  <br /> <br />
 
 Your starting point is: {{ starting_point }}                        <br />
 Your point of arrival is: {{ arrival_point }}                       <br />
 Your kind of path is: {{ kind_path }}                               <br />
-Your filtered difficulties: {{filter_difficulty}}                   <br />
+Your filtered difficulties: {{filter_difficulty}}                   <br /> <br />
+
+{{ res_Dijkstra }}                                                  <br /> <br />
 {{ Dijkstra_text_result }}                                          <br />
 
 
