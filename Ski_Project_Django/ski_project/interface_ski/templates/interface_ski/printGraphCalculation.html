@@ -1,26 +1,281 @@
-{% if sent %} Recovery of values:                                  <br /> <br />
+<!-- It allows to use our Django static folder -->
+{% load static %}
 
+    <head>
+	<!-- To load our css 'ski.css' -->
+	<link rel="stylesheet" type="text/css" href="{% static 'ski.css' %}">
+    </head>
+
+<body>
+
+{% if sent %} 
+<!--
+Recovery of values:                                                 <br /> <br />
 Your starting point is: {{ starting_point }}                        <br />
 Your point of arrival is: {{ arrival_point }}                       <br />
 Your kind of path is: {{ kind_path }}                               <br />
 Your filtered difficulties: {{filter_difficulty}}                   <br /> <br />
+{{ res_Dijkstra }}   
+ -->                                 
+ 
+ <!-- autoescape off: lets escape the html characters -->
+{% autoescape off %}
+ <!-- Dijkstra_text_result: The results from the Disjkstra program -->
+{{ Dijkstra_text_result}}                                          <br />
+{% endautoescape %}
 
-{{ res_Dijkstra }}                                                  <br /> <br />
-{{ Dijkstra_text_result }}                                          <br />
+ <!-- It allows to load the sigma library, from the static folder -->
+<script src="{% static 'sigma.js-1.2.1/src/sigma.core.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/conrad.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/utils/sigma.utils.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/utils/sigma.polyfills.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/sigma.settings.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/classes/sigma.classes.dispatcher.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/classes/sigma.classes.configurable.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/classes/sigma.classes.graph.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/classes/sigma.classes.camera.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/classes/sigma.classes.quad.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/classes/sigma.classes.edgequad.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/captors/sigma.captors.mouse.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/captors/sigma.captors.touch.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/renderers/sigma.renderers.canvas.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/renderers/sigma.renderers.webgl.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/renderers/sigma.renderers.svg.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/renderers/sigma.renderers.def.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/renderers/webgl/sigma.webgl.nodes.def.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/renderers/webgl/sigma.webgl.nodes.fast.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/renderers/webgl/sigma.webgl.edges.def.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/renderers/webgl/sigma.webgl.edges.fast.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/renderers/webgl/sigma.webgl.edges.arrow.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/renderers/canvas/sigma.canvas.labels.def.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/renderers/canvas/sigma.canvas.hovers.def.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/renderers/canvas/sigma.canvas.nodes.def.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/renderers/canvas/sigma.canvas.edges.def.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/renderers/canvas/sigma.canvas.edges.curve.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/renderers/canvas/sigma.canvas.edges.arrow.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/renderers/canvas/sigma.canvas.edges.curvedArrow.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/renderers/canvas/sigma.canvas.edgehovers.def.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/renderers/canvas/sigma.canvas.edgehovers.curve.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/renderers/canvas/sigma.canvas.edgehovers.arrow.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/renderers/canvas/sigma.canvas.edgehovers.curvedArrow.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/renderers/canvas/sigma.canvas.extremities.def.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/renderers/svg/sigma.svg.utils.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/renderers/svg/sigma.svg.nodes.def.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/renderers/svg/sigma.svg.edges.def.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/renderers/svg/sigma.svg.edges.curve.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/renderers/svg/sigma.svg.labels.def.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/renderers/svg/sigma.svg.hovers.def.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/middlewares/sigma.middlewares.rescale.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/middlewares/sigma.middlewares.copy.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/misc/sigma.misc.animation.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/misc/sigma.misc.bindEvents.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/misc/sigma.misc.bindDOMEvents.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/src/misc/sigma.misc.drawHovers.js' %}"></script>
+<!-- END SIGMA IMPORTS -->
+
+ <!-- It allows to load the sigma plugin, from the static folder -->
+<script src="{% static 'sigma.js-1.2.1/plugins/sigma.renderers.edgeDots/sigma.canvas.edges.dotCurve.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/plugins/sigma.renderers.edgeLabels/settings.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/plugins/sigma.renderers.edgeLabels/sigma.canvas.edges.labels.def.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/plugins/sigma.renderers.edgeLabels/sigma.canvas.edges.labels.curvedArrow.js' %}"></script>
+<script src="{% static 'sigma.js-1.2.1/plugins/sigma.plugins.dragNodes/sigma.plugins.dragNodes.js' %}"></script>
+
+<!-- Graph contain, to print our graph -->
+<div id="container">
+    <style>
+        #graph-container {
+            top: 0;
+            bottom: 0;
+            left: 750;
+            right: 0;
+            position: absolute;
+        }
+    </style>
+    <div id="graph-container"></div>
+</div>
+
+<script>
+    /**
+     * It allows to create the graph with the sigma library
+     */
+    var 
+            s,
+            g = {
+                nodes: [],
+                edges: []
+            };
+		
+</script>
 
 
-{% endif %}
+<!-- For each node in the Disjkstra result from the Ski program -->
+{% for nodes in res_Dijkstra.nodes %}
+    <!-- Add the node to the sigma lib graph-->
+	<script>
+		g.nodes.push({
+					id: "{{nodes.node_id}}",
+					label: "{{nodes.node_name}}, height of the peak: {{nodes.node_altitude}}m",
+					x: Math.random(),
+					y: Math.random(),
+					size: 10,
+					color: '#000'
+				});
 
+	</script>	
+
+{% endfor %}
+
+<script>	
+</script>	
+
+<!-- For each edege in the Disjkstra result from the Ski program -->
+{% for edges in res_Dijkstra.edges %}
+
+<script>
+        // edegColor: It allows to define the color for each edege, to print it on the graph
+        var edegColor = '#778899'
+		// TypePath: It allows to define the type of path, to print it on the graph
+        var TypePath
+		
+		// To get the informations
+		switch('{{edges.edge_type}}') {
+			case 'N':
+			  edegColor = '#000'
+			  TypePath = 'Black track'
+			break;
+			case 'R':
+			  edegColor = '#FF0000'
+			  TypePath = 'Red track'
+			break;
+			case 'B':
+			  edegColor = '#0000CD'
+			  TypePath = 'Blue track'
+			break;
+			case 'V':
+			  edegColor = '#32CD32'
+			  TypePath = 'Green track'
+			break;
+			case 'KL':
+			  edegColor = '#FFD700'
+			  TypePath = 'Launched kilometer track'
+			break;
+			case 'SURF':
+			  edegColor = '#4B0082'
+			  TypePath = 'Snow Park'
+			break;
+			case 'TPH':
+			  edegColor = '#9370DB'
+			  TypePath = 'Cable car'
+			break;
+			case 'TC':
+			  edegColor = '#FFA500'
+			  TypePath = 'Telecabine'
+			break;
+			case 'TSD':
+			  edegColor = '#DA70D6'
+			  TypePath = 'Chairlift detachable'
+			break;
+			case 'TS':
+			  edegColor = '#A0522D'
+			  TypePath = 'Chairlift ride'
+			break;
+			case 'TK':
+			  edegColor = '#F5DEB3'
+			  TypePath = 'Ski lift ride'
+			break;
+			case 'BUS':
+			  edegColor = '#9ACD32'
+			  TypePath = 'Bus Trip'
+			break;
+			default:
+        }
+
+		var incline = ''
+		
+		// allows to indicate on the graph whether it is a rise or a decent
+		if('{{edges.is_descent}}' == false)
+		{
+		  incline = ', Incline:' + 'ascent'
+		} 
+		if('{{edges.is_descent}}' == true)
+		{
+		  incline = ', Incline:' + 'descent'
+		}
+		
+		// g.edge.push: Add the edge to the sigma lib graph
+        g.edges.push({
+            id: '{{edges.edge_name}}',
+            label: '{{edges.edge_name}}, ' + TypePath +  incline,
+            source: '{{edges.node1_id}}',
+            target: '{{edges.node2_id}}',
+			size:50,
+			//labelSize:30,
+            color: edegColor,
+            type: 'arrow'		
+        });
+
+
+</script>	
+	
+{% endfor %}
+
+
+<script>
+
+    // Instantiate sigma:
+    s = new sigma({
+        graph: g,
+        renderer: {
+            container: document.getElementById('graph-container'),
+            type: 'canvas'
+        },
+		// graph display settings
+		settings: {
+		maxNodeSize: 16,
+		minNodeSize: 45,
+		minEdgeSize: 5,
+		maxEdgeSize: 5,
+		minArrowSize: 25,
+		defaultLabelSize: 20,
+		defaultLabelColor: "#000",
+		defaultEdgeLabelSize: 20
+		}
+    });
+	
+// Initialize the dragNodes plugin:
+var dragListener = sigma.plugins.dragNodes(s, s.renderers[0]);
+
+// It allows to drag the nodges
+dragListener.bind('startdrag', function(event) {
+  console.log(event);
+});
+dragListener.bind('drag', function(event) {
+  console.log(event);
+});
+dragListener.bind('drop', function(event) {
+  console.log(event);
+});
+dragListener.bind('dragend', function(event) {
+  console.log(event);
+});
+</script>
+
+<!--    <canvas id="springydemo" width="640" height="480" /> -->
+ 
+ {% endif %}
 
 <p>
  ===========================================================================    <br />
- DJANGO SKI TEST PROGRAM                                                        <br />
- Copyright 2019, Pierrick PUJOL, Stephane BOUCAUD, Simon GILBERT  <br />
+ DJANGO SKI PROGRAM                                                             <br />
+ Copyright 2019, Pierrick PUJOL, Stephane BOUCAUD, Simon GILBERT                <br />
  ===========================================================================    <br />
 </p>
 
+<!--  It allows to print the Dijkstra form  -->
 <form action="{% url "graph_calculation" %}" method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Submit" />
 </form>
+
+</body>

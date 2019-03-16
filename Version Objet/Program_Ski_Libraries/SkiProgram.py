@@ -1091,7 +1091,7 @@ def shortest_path_result_into_text (JSON):
 	
 	result_text = ""
 	
-	result_text += "\n---------------------------------------------------\n"
+	result_text += "\n---------------------------------------------------\n " 
 	result_text += "Execution mode: "+JSON["execution_mode"]+" , Execution time: "+str(JSON["execution_time"])
 	if len(JSON["filter_on"]) > 0:
 		result_text +="\nFilter on:"

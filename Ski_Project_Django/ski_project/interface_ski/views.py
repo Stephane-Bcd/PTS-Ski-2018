@@ -39,6 +39,7 @@ def graph(request):
         graph_file_path = './Version Objet/Input_Or_Generated_Files/data_arcs.txt'
         flows_file_path = "./Version Objet/Input_Or_Generated_Files/current_flows.txt"
     
+	    # It allows to create our graph
         graph = SkiProgram.load_all_graph_input_data(graph_file_path, flows_file_path, "Main Graph", False, False, 100)
         
         #Index Nodes and Edges for next steps
@@ -48,8 +49,7 @@ def graph(request):
         #Executing Dijkstra Algorithm
         res_Dijkstra = SkiProgram.Dijkstra (graph, starting_point, arrival_point, kind_path, index_nodes_name_to_key, index_edges_2dkey_to_object, filter_difficulty, False)
         # allows to have a display of the shortest path easy to understand by a user
-        Dijkstra_text_result = SkiProgram.shortest_path_result_into_text(res_Dijkstra)
-        
+        Dijkstra_text_result = SkiProgram.shortest_path_result_into_text(res_Dijkstra).replace('\n','<br />')
         ############ END OF THE INTEGRATION OF THE DIJKSTRA PROGRAM  ################################
  
  
