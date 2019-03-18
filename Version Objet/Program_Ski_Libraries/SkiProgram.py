@@ -1091,7 +1091,7 @@ def shortest_path_result_into_text (JSON):
 	
 	result_text = ""
 	
-	result_text += "\n---------------------------------------------------\n " 
+	result_text += "\n---------------------------------------------------\n" 
 	result_text += "Execution mode: "+JSON["execution_mode"]+" , Execution time: "+str(JSON["execution_time"])
 	if len(JSON["filter_on"]) > 0:
 		result_text +="\nFilter on:"
@@ -1105,7 +1105,11 @@ def shortest_path_result_into_text (JSON):
 	if JSON["used_weight"] == "normal_weight":
 		result_text += "Shortest path"
 	elif JSON["used_weight"] == "most_interesting_path_weight":
-		result_text += "Shortest path fovorizing descents"
+		result_text += "Shortest path that favors descents"
+	elif JSON["used_weight"] == "less_congested_path_weight":
+		result_text += "Shortest path that favors less congested path"
+	elif JSON["used_weight"] == "most_interesting_and_less_congested_path_weight":
+		result_text += "Shortest path that favors less congested path and descents"
 	else:
 		result_text += "Unknown"
 	

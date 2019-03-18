@@ -66,9 +66,9 @@ try:
 		#Desired path to go from point A or B (Shortest, Fun, Not overcrowded)
 		list_choices_desired_path = [
 			"1. Shortest path (fast and furious!)",
-			"2. Favorising descents (more fun!)",
-			"3. Favorising less congested path (less waiting!)",
-			"4. Favorising less congested path and favorising descents"
+			"2. Shortest path that favors descents (more fun!)",
+			"3. Shortest path that favors less congested path (less waiting!)",
+			"4. Shortest path that favors less congested path and descents"
 		]
 		
 		choice_desired_path = cs.ask_option_from_choice_list(list_choices_desired_path, "What kind of path would you prefer to go through?")
